@@ -1,0 +1,6 @@
+{
+  "name": "Altavita Salud Integrativa",
+  "description": "Centro médico interactivo y tienda online de salud integrativa y suplementación en La Serena, Chile.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
