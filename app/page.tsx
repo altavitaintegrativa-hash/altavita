@@ -38,7 +38,8 @@ import {
   Check,
   CreditCard,
   Building2,
-  RefreshCw
+  RefreshCw,
+  Eye
 } from 'lucide-react';
 import { useProducts, Product } from '@/hooks/useProducts';
 
@@ -236,6 +237,7 @@ export default function AltavitaPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [activeModalImgIndex, setActiveModalImgIndex] = useState<number>(0);
 
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Medicina General');
@@ -308,6 +310,11 @@ export default function AltavitaPage() {
   const openBookingForSpecialty = (specialtyName: string) => {
     setSelectedSpecialtyForBooking(specialtyName);
     setIsBookingModalOpen(true);
+  };
+
+  const openQuickView = (product: Product) => {
+    setQuickViewProduct(product);
+    setActiveModalImgIndex(0);
   };
 
   const generateWhatsAppOrderLink = () => {
@@ -978,7 +985,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* TIENDA DIGITAL (Lector con soporte para Foto) */}
+        {/* TIENDA DIGITAL */}
         <section id="tienda-section" className="py-16 md:py-24 bg-[#F8F8F4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-10">
@@ -1070,7 +1077,11 @@ export default function AltavitaPage() {
                     className="bg-white rounded-2xl border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:-translate-y-1"
                   >
                     <div>
-                      <div className={`relative h-52 bg-gradient-to-br ${product.colorScheme.bg} p-4 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden`}>
+                      {/* Contenedor de Imagen (Abre Modal al Clic) */}
+                      <div
+                        onClick={() => openQuickView(product)}
+                        className={`relative h-56 bg-gradient-to-br ${product.colorScheme.bg} p-4 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden cursor-pointer`}
+                      >
                         {product.badge && (
                           <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[11px] px-2.5 py-1 rounded-md shadow-md border border-[#b89528] tracking-wide z-10">
                             {product.badge}
@@ -1080,8 +1091,8 @@ export default function AltavitaPage() {
                           {product.format}
                         </div>
 
-                        {/* Renderizado de Fotografía Real vs Mockup CSS */}
-                        <div className="relative w-full h-36 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        {/* Imagen con Object-Contain sin recortar */}
+                        <div className="relative w-full h-40 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                           {product.imageUrl ? (
                             <img
                               src={product.imageUrl}
@@ -1105,12 +1116,9 @@ export default function AltavitaPage() {
                           )}
                         </div>
 
-                        <button
-                          onClick={() => setQuickViewProduct(product)}
-                          className="absolute bottom-3 bg-white/90 hover:bg-white text-[#22311D] text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-10"
-                        >
-                          <Info className="w-3 h-3 text-[#3B5B28]" /> Ver detalles
-                        </button>
+                        <span className="absolute bottom-3 bg-white/90 group-hover:bg-[#3B5B28] group-hover:text-white text-[#22311D] text-[11px] font-bold px-3 py-1.5 rounded-full shadow-xs transition-all flex items-center gap-1 z-10">
+                          <Eye className="w-3.5 h-3.5 text-[#D4AF37]" /> Ver detalles
+                        </span>
                       </div>
 
                       <div className="p-5 space-y-3">
@@ -1123,7 +1131,11 @@ export default function AltavitaPage() {
                           </div>
                         </div>
 
-                        <h3 className="font-serif font-bold text-lg text-[#22311D] leading-tight group-hover:text-[#3B5B28] transition-colors">
+                        {/* Título del Producto (Abre Modal al Clic) */}
+                        <h3
+                          onClick={() => openQuickView(product)}
+                          className="font-serif font-bold text-lg text-[#22311D] leading-tight hover:text-[#3B5B28] transition-colors cursor-pointer"
+                        >
                           {product.name}
                         </h3>
 
@@ -1229,7 +1241,7 @@ export default function AltavitaPage() {
         </section>
       </main>
 
-      {/* CARRITO DE COMPRAS */}
+      {/* CARRITO SLIDE-OVER */}
       <AnimatePresence>
         {isCartOpen && (
           <div id="cart-drawer-overlay" className="fixed inset-0 z-50 overflow-hidden">
@@ -1488,58 +1500,124 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW */}
+      {/* MODAL QUICK VIEW (Galería de hasta 5 imágenes + Visor) */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setQuickViewProduct(null)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl z-10 space-y-4">
-              <div className="flex items-start justify-between">
+            
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl z-10 space-y-6">
+              
+              <div className="flex items-start justify-between border-b pb-3">
                 <div>
-                  <span className="text-[10px] font-bold text-[#5B8246] uppercase">{quickViewProduct.category}</span>
-                  <h3 className="font-serif font-bold text-lg text-[#22311D]">{quickViewProduct.name}</h3>
+                  <span className="text-[10px] font-bold text-[#5B8246] uppercase tracking-wider">{quickViewProduct.category}</span>
+                  <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#22311D]">{quickViewProduct.name}</h3>
                 </div>
-                <button onClick={() => setQuickViewProduct(null)}><X className="w-4 h-4 text-stone-400" /></button>
-              </div>
-
-              <div className="h-40 bg-[#F8F8F4] rounded-2xl flex items-center justify-center p-2 border border-[#3B5B28]/10 overflow-hidden">
-                {quickViewProduct.imageUrl ? (
-                  <img src={quickViewProduct.imageUrl} alt={quickViewProduct.name} className="w-full h-full object-contain" />
-                ) : (
-                  <Leaf className="w-10 h-10 text-[#3B5B28]" />
-                )}
-              </div>
-
-              <p className="text-xs text-[#22311D]/80">{quickViewProduct.description}</p>
-
-              <div className="bg-[#F8F8F4] p-3.5 rounded-xl space-y-1.5 border border-[#3B5B28]/15">
-                <h4 className="text-[11px] font-bold uppercase text-[#3B5B28]">Beneficios Destacados:</h4>
-                {quickViewProduct.benefits.map((b, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs text-[#22311D]/80">
-                    <Check className="w-3.5 h-3.5 text-[#3B5B28] shrink-0" />
-                    <span>{b}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-between pt-2">
-                <div>
-                  {quickViewProduct.normalPrice > quickViewProduct.salePrice && (
-                    <span className="text-xs text-[#22311D]/50 line-through block">{formatCLP(quickViewProduct.normalPrice)}</span>
-                  )}
-                  <span className="text-xl font-black text-[#3B5B28]">{formatCLP(quickViewProduct.salePrice)}</span>
-                </div>
-                <button
-                  onClick={() => {
-                    addToCart(quickViewProduct);
-                    setQuickViewProduct(null);
-                  }}
-                  className="bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs shadow-md flex items-center gap-2"
-                >
-                  <ShoppingBag className="w-4 h-4 text-slate-950" />
-                  <span>Añadir</span>
+                <button onClick={() => setQuickViewProduct(null)} className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700">
+                  <X className="w-5 h-5" />
                 </button>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                {/* Visor de Galería con miniaturas */}
+                <div className="space-y-3">
+                  <div className="relative h-64 sm:h-72 bg-[#F8F8F4] rounded-2xl border border-[#3B5B28]/15 flex items-center justify-center p-4 overflow-hidden">
+                    {quickViewProduct.badge && (
+                      <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[10px] px-2.5 py-1 rounded-md shadow-xs border border-[#b89528] z-10">
+                        {quickViewProduct.badge}
+                      </div>
+                    )}
+
+                    {quickViewProduct.images && quickViewProduct.images.length > 0 ? (
+                      <img
+                        src={quickViewProduct.images[activeModalImgIndex] || quickViewProduct.images[0]}
+                        alt={quickViewProduct.name}
+                        className="w-full h-full object-contain drop-shadow-md transition-all duration-300"
+                      />
+                    ) : (
+                      <div className="w-20 h-28 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2 border-2 border-[#D4AF37]/50 relative overflow-hidden">
+                        <div className="w-10 h-3 rounded-t-md bg-[#D4AF37] border-b border-amber-800/40 -mt-2 shadow-xs" />
+                        <div className="w-full bg-[#F8F8F4] rounded-md p-1 text-center shadow-xs">
+                          <div className="w-3.5 h-3.5 mx-auto rounded-full bg-[#3B5B28] mb-0.5 flex items-center justify-center">
+                            <Leaf className="w-2 h-2 text-[#D4AF37]" />
+                          </div>
+                          <p className="text-[7px] font-black uppercase text-[#22311D] truncate">{quickViewProduct.name.split(' ')[0]}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {quickViewProduct.images && quickViewProduct.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setActiveModalImgIndex((prev) => (prev - 1 + quickViewProduct.images.length) % quickViewProduct.images.length)}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setActiveModalImgIndex((prev) => (prev + 1) % quickViewProduct.images.length)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Strip de Miniaturas (hasta 5 fotos) */}
+                  {quickViewProduct.images && quickViewProduct.images.length > 1 && (
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 justify-center">
+                      {quickViewProduct.images.map((imgUrl, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveModalImgIndex(idx)}
+                          className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all bg-[#F8F8F4] flex items-center justify-center ${
+                            activeModalImgIndex === idx ? 'border-[#3B5B28] shadow-xs scale-105' : 'border-transparent opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={imgUrl} alt="" className="w-full h-full object-contain p-0.5" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Detalles y Beneficios */}
+                <div className="space-y-4">
+                  <p className="text-xs text-[#22311D]/80 leading-relaxed font-medium">{quickViewProduct.description}</p>
+
+                  <div className="bg-[#F8F8F4] p-3.5 rounded-xl space-y-1.5 border border-[#3B5B28]/15">
+                    <h4 className="text-[11px] font-bold uppercase text-[#3B5B28] tracking-wider">Beneficios Principales:</h4>
+                    {quickViewProduct.benefits.map((b, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-[#22311D]/85">
+                        <Check className="w-3.5 h-3.5 text-[#3B5B28] shrink-0" />
+                        <span>{b}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 border-t border-[#3B5B28]/10 flex items-center justify-between">
+                    <div>
+                      {quickViewProduct.normalPrice > quickViewProduct.salePrice && (
+                        <span className="text-xs text-[#22311D]/50 line-through block">{formatCLP(quickViewProduct.normalPrice)}</span>
+                      )}
+                      <span className="text-2xl font-black text-[#3B5B28]">{formatCLP(quickViewProduct.salePrice)}</span>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        addToCart(quickViewProduct);
+                        setQuickViewProduct(null);
+                      }}
+                      className="bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold px-6 py-3 rounded-xl text-xs sm:text-sm shadow-md flex items-center gap-2 border border-[#b89528]"
+                    >
+                      <ShoppingBag className="w-4 h-4 text-slate-950" />
+                      <span>Añadir al Carrito</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             </motion.div>
           </div>
         )}
