@@ -1137,7 +1137,7 @@ export default function AltavitaPage() {
                             <img
                               src={product.imageUrl}
                               alt={product.name}
-                              className="w-full h-full object-contain drop-shadow-md"
+                              className="max-h-full max-w-full w-auto h-auto object-contain drop-shadow-md"
                             />
                           ) : (
                             <div className="w-24 h-32 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2.5 border-2 border-[#D4AF37]/50 relative overflow-hidden">
@@ -1432,7 +1432,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CONSULTORIO.ME (URL Dinámica) */}
+      {/* MODAL CONSULTORIO.ME */}
       <AnimatePresence>
         {isBookingModalOpen && (
           <div id="booking-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1535,7 +1535,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW */}
+      {/* MODAL QUICK VIEW (Visor Adaptado sin recortes) */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1566,7 +1566,7 @@ export default function AltavitaPage() {
                       <img
                         src={quickViewProduct.images[activeModalImgIndex] || quickViewProduct.images[0]}
                         alt={quickViewProduct.name}
-                        className="w-full h-full object-contain drop-shadow-md transition-all duration-300"
+                        className="max-h-full max-w-full w-auto h-auto object-contain drop-shadow-md transition-all duration-300"
                       />
                     ) : (
                       <div className="w-20 h-28 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2 border-2 border-[#D4AF37]/50 relative overflow-hidden">
@@ -1584,13 +1584,13 @@ export default function AltavitaPage() {
                       <>
                         <button
                           onClick={() => setActiveModalImgIndex((prev) => (prev - 1 + quickViewProduct.images.length) % quickViewProduct.images.length)}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all z-10"
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setActiveModalImgIndex((prev) => (prev + 1) % quickViewProduct.images.length)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all z-10"
                         >
                           <ChevronRight className="w-4 h-4" />
                         </button>
@@ -1608,7 +1608,7 @@ export default function AltavitaPage() {
                             activeModalImgIndex === idx ? 'border-[#3B5B28] shadow-xs scale-105' : 'border-transparent opacity-60 hover:opacity-100'
                           }`}
                         >
-                          <img src={imgUrl} alt="" className="w-full h-full object-contain p-0.5" />
+                          <img src={imgUrl} alt="" className="max-h-full max-w-full w-auto h-auto object-contain p-0.5" />
                         </button>
                       ))}
                     </div>
