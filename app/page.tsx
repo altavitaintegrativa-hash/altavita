@@ -53,7 +53,7 @@ export interface Specialty {
   iconName: string;
   shortDesc: string;
   focus: string[];
-  bookingUrl?: string; // Enlace directo opcional por especialidad
+  bookingUrl?: string;
 }
 
 const SPECIALTIES_DATA: Specialty[] = [
@@ -194,8 +194,34 @@ const HERO_SLIDES: HeroSlide[] = [
     ctaAction: 'booking',
     secondaryText: 'Ver 11 Especialidades',
     secondaryAction: 'specialties',
-    bgImage: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1600&q=80',
+    bgImage: '/recepcion.jpg',
     badgeContent: 'Los Hibiscus 740, La Serena · Reserva Online 24/7'
+  },
+  {
+    id: 'boxes-clinicos',
+    tag: 'BOXES MÉDICOS EQUIPADOS · LA SERENA',
+    title: 'Espacios Diseñados para tu Comodidad y Sanación',
+    subtitle: 'Instalaciones modernas y climatizadas diseñadas para brindarte una atención médica humana y confortable.',
+    ctaText: 'Agendar Consulta',
+    ctaVariant: 'gold',
+    ctaAction: 'booking',
+    secondaryText: 'Conocer Especialidades',
+    secondaryAction: 'specialties',
+    bgImage: '/box-1.jpg',
+    badgeContent: 'Atención Profesional · Los Hibiscus 740'
+  },
+  {
+    id: 'pediatria-familiar',
+    tag: 'PEDIATRÍA & INTEGRACIÓN SENSORIAL',
+    title: 'Cuidado Cálido y Especializado para tus Hijos',
+    subtitle: 'Boxes equipados para el desarrollo infantil, control de niño sano y terapias de integración sensorial.',
+    ctaText: 'Agendar Hora Pediátrica',
+    ctaVariant: 'gold',
+    ctaAction: 'booking',
+    secondaryText: 'Ver Especialidades',
+    secondaryAction: 'specialties',
+    bgImage: '/box-2.jpg',
+    badgeContent: 'Atención Pediátrica · Desarrollo e Integración'
   },
   {
     id: 'tienda-suplementos',
@@ -251,7 +277,6 @@ export default function AltavitaPage() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [activeModalImgIndex, setActiveModalImgIndex] = useState<number>(0);
 
-  // Estados de Agendamiento
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Medicina General');
   const [selectedSpecialtyBookingUrl, setSelectedSpecialtyBookingUrl] = useState<string>(DEFAULT_BOOKING_URL);
@@ -747,7 +772,7 @@ export default function AltavitaPage() {
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                   style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1594824813571-28a778e709a3?auto=format&fit=crop&w=1200&q=80')`
+                    backgroundImage: `url('/sala-espera-1.jpg')`
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#22311D] via-[#22311D]/80 to-[#22311D]/30 transition-opacity group-hover:opacity-95" />
@@ -902,7 +927,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* CONSULTORIO.ME EMBEDDED */}
+        {/* CONSULTORIO.ME EMBEDDED CON FOTO DE CLÍNICA */}
         <section id="agendamiento-section" className="py-16 bg-white border-y border-[#3B5B28]/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-10">
@@ -924,21 +949,24 @@ export default function AltavitaPage() {
               id="consultorio-me-embed-container"
               className="bg-[#F8F8F4] rounded-3xl border-2 border-[#3B5B28]/20 shadow-xl overflow-hidden max-w-4xl mx-auto"
             >
-              <div className="bg-[#3B5B28] text-white px-6 py-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#D4AF37] flex items-center justify-center text-slate-950 font-bold text-xs">
+              <div
+                className="bg-cover bg-center text-white px-6 py-6 flex flex-wrap items-center justify-between gap-3 relative"
+                style={{ backgroundImage: `linear-gradient(to right, rgba(34, 49, 29, 0.92), rgba(59, 91, 40, 0.85)), url('/box-3.jpg')` }}
+              >
+                <div className="flex items-center gap-3.5 z-10">
+                  <div className="w-10 h-10 rounded-xl bg-[#D4AF37] flex items-center justify-center text-slate-950 font-extrabold text-sm shadow-md">
                     AV
                   </div>
                   <div>
-                    <h3 className="font-serif font-bold text-base leading-tight">
+                    <h3 className="font-serif font-bold text-lg leading-tight">
                       Altavita Salud Integrativa
                     </h3>
-                    <p className="text-[11px] text-[#F8F8F4]/80">
-                      Los Hibiscus 740, La Serena
+                    <p className="text-xs text-[#F8F8F4]/80">
+                      Los Hibiscus 740, La Serena · Atención Presencial & Telemedicina
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-xs bg-[#22311D]/40 px-3 py-1.5 rounded-lg border border-white/10">
+                <div className="flex items-center gap-2 text-xs bg-black/40 px-3 py-1.5 rounded-lg border border-white/20 backdrop-blur-xs z-10">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                   <span className="font-medium text-emerald-200">Agenda Activa</span>
                 </div>
