@@ -16,6 +16,7 @@ export interface Product {
   format: string;
   badge?: string;
   imageUrl?: string;
+  images: string[];
   colorScheme: {
     bg: string;
     badgeBg: string;
@@ -36,6 +37,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     reviewsCount: 42,
     format: 'Gotario 30 ml',
     badge: '25% DSCTO',
+    imageUrl: 'https://i.ibb.co/0pQKyhVH/Cola-de-Pavo.png',
+    images: ['https://i.ibb.co/0pQKyhVH/Cola-de-Pavo.png'],
     colorScheme: { bg: 'from-amber-900/15 to-stone-100', badgeBg: 'bg-[#D4AF37] text-slate-950' }
   },
   {
@@ -51,6 +54,8 @@ export const INITIAL_PRODUCTS: Product[] = [
     reviewsCount: 64,
     format: '60 Cápsulas',
     badge: 'DESTACADO',
+    imageUrl: 'https://i.ibb.co/WNc4hJPm/Berberina.png',
+    images: ['https://i.ibb.co/WNc4hJPm/Berberina.png'],
     colorScheme: { bg: 'from-emerald-900/15 to-stone-100', badgeBg: 'bg-[#D4AF37] text-slate-950' }
   }
 ];
@@ -124,7 +129,13 @@ export function useProducts(csvUrlOrSheetId?: string) {
           const benefitsRaw = getValue('benefits');
           const benefits = benefitsRaw ? benefitsRaw.split(';').map((b) => b.trim()) : ['100% Natural'];
 
-          const img = getValue('imageurl') || getValue('image') || getValue('imagen') || undefined;
+          const img1 = getValue('imageurl') || getValue('image') || getValue('imagen') || getValue('imageurl1') || '';
+          const img2 = getValue('imageurl2') || getValue('image2') || getValue('imagen2') || '';
+          const img3 = getValue('imageurl3') || getValue('image3') || getValue('imagen3') || '';
+          const img4 = getValue('imageurl4') || getValue('image4') || getValue('imagen4') || '';
+          const img5 = getValue('imageurl5') || getValue('image5') || getValue('imagen5') || '';
+
+          const allImages = [img1, img2, img3, img4, img5].filter((u) => u && u.length > 5);
 
           fetchedProducts.push({
             id: getValue('id') || `sheet-prod-${i}`,
@@ -139,7 +150,8 @@ export function useProducts(csvUrlOrSheetId?: string) {
             reviewsCount: 25 + i * 2,
             format: getValue('format') || 'Frasco',
             badge: getValue('badge') || undefined,
-            imageUrl: img,
+            imageUrl: allImages[0] || undefined,
+            images: allImages,
             colorScheme: {
               bg: category === 'Hongos Adaptógenos' ? 'from-amber-900/15 to-stone-100' : 'from-emerald-900/15 to-stone-100',
               badgeBg: 'bg-[#D4AF37] text-slate-950'
