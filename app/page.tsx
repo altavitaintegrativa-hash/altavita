@@ -43,6 +43,7 @@ import {
 import { useProducts, Product } from '@/hooks/useProducts';
 
 const PUBLISHED_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv';
+const DEFAULT_BOOKING_URL = 'https://consultorio.me/pre/selectexternal/417602?external=true';
 
 export interface Specialty {
   id: string;
@@ -52,6 +53,7 @@ export interface Specialty {
   iconName: string;
   shortDesc: string;
   focus: string[];
+  bookingUrl?: string; // Enlace directo opcional por especialidad
 }
 
 const SPECIALTIES_DATA: Specialty[] = [
@@ -62,7 +64,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Salud Primaria & Preventiva',
     iconName: 'Stethoscope',
     shortDesc: 'Evaluación clínica integral, diagnóstico oportuno, orden de exámenes y prevención en salud.',
-    focus: ['Chequeo médico integral', 'Manejo de patologías generales', 'Orden e interpretación de exámenes']
+    focus: ['Chequeo médico integral', 'Manejo de patologías generales', 'Orden e interpretación de exámenes'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'pediatria',
@@ -71,7 +74,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Salud Infanto-Juvenil',
     iconName: 'Baby',
     shortDesc: 'Control de desarrollo, nutrición pediátrica y atención médica especializada para niños y adolescentes.',
-    focus: ['Control de niño sano', 'Desarrollo psicomotor y físico', 'Atención de morbilidad infantil']
+    focus: ['Control de niño sano', 'Desarrollo psicomotor y físico', 'Atención de morbilidad infantil'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'otomodelacion',
@@ -80,7 +84,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Procedimiento Estético',
     iconName: 'Sparkles',
     shortDesc: 'Técnica ambulatoria no quirúrgica para remodelar y armonizar el pabellón auricular de forma segura.',
-    focus: ['Remodelación sin pabellón quirúrgico', 'Procedimiento ambulatorio', 'Resultados inmediatos']
+    focus: ['Remodelación sin pabellón quirúrgico', 'Procedimiento ambulatorio', 'Resultados inmediatos'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'quiropraxia',
@@ -89,7 +94,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Columna & Postura',
     iconName: 'Activity',
     shortDesc: 'Ajustes articulares y vertebrales para aliviar restricciones biomecánicas y dolor de espalda.',
-    focus: ['Ajustes vertebrales', 'Alivio de lumbalgia y cervicalgia', 'Corrección postura y ergonomía']
+    focus: ['Ajustes vertebrales', 'Alivio de lumbalgia y cervicalgia', 'Corrección postura y ergonomía'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'traumatologia',
@@ -98,7 +104,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Sistema Osteoarticular',
     iconName: 'Bone',
     shortDesc: 'Diagnóstico y manejo de lesiones musculares, articulares, tendinosas y molestias óseas.',
-    focus: ['Tratamiento de dolor articular', 'Lesiones tendinosas y musculares', 'Evaluación física completa']
+    focus: ['Tratamiento de dolor articular', 'Lesiones tendinosas y musculares', 'Evaluación física completa'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'estetica-no-invasiva',
@@ -107,7 +114,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Armonización & Cuidado Celular',
     iconName: 'Flame',
     shortDesc: 'Tratamientos dermocosméticos y faciales para realzar la vitalidad y frescura natural de la piel.',
-    focus: ['Tratamientos de revitalización', 'Limpieza y cuidado facial', 'Procedimientos no invasivos']
+    focus: ['Tratamientos de revitalización', 'Limpieza y cuidado facial', 'Procedimientos no invasivos'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'kinesiologia',
@@ -116,7 +124,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Rehabilitación & Movimiento',
     iconName: 'Activity',
     shortDesc: 'Terapia física para reintegro funcional, rehabilitación traumatológica y acondicionamiento muscular.',
-    focus: ['Rehabilitación traumatológica', 'Terapia manual dirigida', 'Acondicionamiento físico']
+    focus: ['Rehabilitación traumatológica', 'Terapia manual dirigida', 'Acondicionamiento físico'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'psicologia',
@@ -125,7 +134,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Salud Mental & Bienestar',
     iconName: 'Brain',
     shortDesc: 'Acompañamiento psicoterapéutico individual para adultos y jóvenes en gestión del estrés y ansiedad.',
-    focus: ['Gestión de ansiedad y estrés', 'Psicoterapia individual', 'Desarrollo de herramientas emocionales']
+    focus: ['Gestión de ansiedad y estrés', 'Psicoterapia individual', 'Desarrollo de herramientas emocionales'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'fonoaudiologia',
@@ -134,7 +144,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Comunicación & Lenguaje',
     iconName: 'MessageSquare',
     shortDesc: 'Evaluación y tratamiento en trastornos del habla, lenguaje, salud vocal y deglución.',
-    focus: ['Trastornos del habla y lenguaje', 'Evaluación vocal profesional', 'Terapia de deglución']
+    focus: ['Trastornos del habla y lenguaje', 'Evaluación vocal profesional', 'Terapia de deglución'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'terapia-ocupacional',
@@ -143,7 +154,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Integración Sensorial & Autonomía',
     iconName: 'Compass',
     shortDesc: 'Evaluación sensorial, estimulación cognitiva y apoyo en el desarrollo de la vida diaria y neurodivergencias.',
-    focus: ['Integración sensorial y apoyo TEA', 'Estimulación cognitiva', 'Estrategias para autonomía']
+    focus: ['Integración sensorial y apoyo TEA', 'Estimulación cognitiva', 'Estrategias para autonomía'],
+    bookingUrl: DEFAULT_BOOKING_URL
   },
   {
     id: 'medicina-complementaria',
@@ -152,7 +164,8 @@ const SPECIALTIES_DATA: Specialty[] = [
     badgeLabel: 'Enfoque Holístico & Bienestar',
     iconName: 'Leaf',
     shortDesc: 'Terapias complementarias para favorecer el equilibrio físico, mental y energético del organismo.',
-    focus: ['Enfoque integral de salud', 'Terapias de bienestar corporal', 'Apoyo en autorregulación']
+    focus: ['Enfoque integral de salud', 'Terapias de bienestar corporal', 'Apoyo en autorregulación'],
+    bookingUrl: DEFAULT_BOOKING_URL
   }
 ];
 
@@ -238,8 +251,10 @@ export default function AltavitaPage() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [activeModalImgIndex, setActiveModalImgIndex] = useState<number>(0);
 
+  // Estados de Agendamiento
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Medicina General');
+  const [selectedSpecialtyBookingUrl, setSelectedSpecialtyBookingUrl] = useState<string>(DEFAULT_BOOKING_URL);
 
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<'form' | 'success'>('form');
@@ -306,8 +321,9 @@ export default function AltavitaPage() {
     });
   }, [PRODUCTS_DATABASE, selectedCategory, searchQuery]);
 
-  const openBookingForSpecialty = (specialtyName: string) => {
+  const openBookingForSpecialty = (specialtyName: string, bookingUrl?: string) => {
     setSelectedSpecialtyForBooking(specialtyName);
+    setSelectedSpecialtyBookingUrl(bookingUrl || DEFAULT_BOOKING_URL);
     setIsBookingModalOpen(true);
   };
 
@@ -457,10 +473,7 @@ export default function AltavitaPage() {
           <div className="flex items-center gap-2.5 sm:gap-3.5">
             <button
               id="header-cta-agendar"
-              onClick={() => {
-                setSelectedSpecialtyForBooking('Medicina General');
-                setIsBookingModalOpen(true);
-              }}
+              onClick={() => openBookingForSpecialty('Medicina General')}
               className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#c5a028] active:scale-95 text-slate-950 font-bold px-3.5 sm:px-5 py-2.5 rounded-xl shadow-md transition-all duration-150 text-xs sm:text-sm border border-[#b89528]"
             >
               <Calendar className="w-4 h-4 text-slate-950" />
@@ -623,10 +636,7 @@ export default function AltavitaPage() {
                         {slide.ctaVariant === 'gold' ? (
                           <button
                             id="hero-slide-gold-cta"
-                            onClick={() => {
-                              setSelectedSpecialtyForBooking('Medicina General');
-                              setIsBookingModalOpen(true);
-                            }}
+                            onClick={() => openBookingForSpecialty('Medicina General')}
                             className="flex items-center justify-center gap-2.5 bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-bold px-7 py-4 rounded-xl shadow-xl transition-all duration-200 text-sm sm:text-base border border-[#b89528] active:scale-98"
                           >
                             <Calendar className="w-5 h-5 text-slate-950" />
@@ -878,7 +888,7 @@ export default function AltavitaPage() {
                   <div className="pt-4 border-t border-[#3B5B28]/10">
                     <button
                       id={`btn-agendar-specialty-${specialty.id}`}
-                      onClick={() => openBookingForSpecialty(specialty.name)}
+                      onClick={() => openBookingForSpecialty(specialty.name, specialty.bookingUrl)}
                       className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
                       style={{ backgroundColor: specialty.areaColor }}
                     >
@@ -892,7 +902,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* CONSULTORIO.ME */}
+        {/* CONSULTORIO.ME EMBEDDED */}
         <section id="agendamiento-section" className="py-16 bg-white border-y border-[#3B5B28]/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-10">
@@ -943,7 +953,12 @@ export default function AltavitaPage() {
                     <select
                       id="embed-specialty-selector"
                       value={selectedSpecialtyForBooking}
-                      onChange={(e) => setSelectedSpecialtyForBooking(e.target.value)}
+                      onChange={(e) => {
+                        const selectedName = e.target.value;
+                        setSelectedSpecialtyForBooking(selectedName);
+                        const sp = SPECIALTIES_DATA.find((s) => s.name === selectedName);
+                        setSelectedSpecialtyBookingUrl(sp?.bookingUrl || DEFAULT_BOOKING_URL);
+                      }}
                       className="w-full bg-[#F8F8F4] border border-[#3B5B28]/20 rounded-lg p-2.5 text-xs font-bold text-[#22311D] focus:ring-2 focus:ring-[#3B5B28]"
                     >
                       {SPECIALTIES_DATA.map((sp) => (
@@ -1076,7 +1091,6 @@ export default function AltavitaPage() {
                     className="bg-white rounded-2xl border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:-translate-y-1"
                   >
                     <div>
-                      {/* Contenedor de Imagen Agrandado (Abre Modal al Clic) */}
                       <div
                         onClick={() => openQuickView(product)}
                         className={`relative h-64 bg-gradient-to-br ${product.colorScheme.bg} p-4 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden cursor-pointer`}
@@ -1090,7 +1104,6 @@ export default function AltavitaPage() {
                           {product.format}
                         </div>
 
-                        {/* Imagen Agrandada con Object-Contain sin recortar */}
                         <div className="relative w-full h-52 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                           {product.imageUrl ? (
                             <img
@@ -1126,7 +1139,6 @@ export default function AltavitaPage() {
                           </div>
                         </div>
 
-                        {/* Título del Producto (Abre Modal al Clic) */}
                         <h3
                           onClick={() => openQuickView(product)}
                           className="font-serif font-bold text-lg text-[#22311D] leading-tight hover:text-[#3B5B28] transition-colors cursor-pointer"
@@ -1392,7 +1404,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CONSULTORIO.ME */}
+      {/* MODAL CONSULTORIO.ME (URL Dinámica) */}
       <AnimatePresence>
         {isBookingModalOpen && (
           <div id="booking-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1416,7 +1428,7 @@ export default function AltavitaPage() {
 
               <div className="p-2 sm:p-4 bg-[#F8F8F4] h-[500px]">
                 <iframe
-                  src="https://consultorio.me/pre/selectexternal/417602?external=true"
+                  src={selectedSpecialtyBookingUrl || DEFAULT_BOOKING_URL}
                   title="Agendamiento Altavita Consultorio.me"
                   className="w-full h-full border-0 rounded-2xl"
                   allow="payment"
@@ -1677,7 +1689,7 @@ export default function AltavitaPage() {
               <ul className="space-y-1.5 text-xs text-[#F8F8F4]/80">
                 {SPECIALTIES_DATA.slice(0, 6).map((sp) => (
                   <li key={sp.id}>
-                    <button onClick={() => openBookingForSpecialty(sp.name)} className="hover:text-[#D4AF37] transition-colors text-left">
+                    <button onClick={() => openBookingForSpecialty(sp.name, sp.bookingUrl)} className="hover:text-[#D4AF37] transition-colors text-left">
                       • {sp.name}
                     </button>
                   </li>
