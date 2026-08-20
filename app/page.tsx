@@ -1535,7 +1535,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW (Visor Adaptado sin recortes) */}
+      {/* MODAL QUICK VIEW (Marco de visualización estricto sin deformaciones) */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1555,7 +1555,7 @@ export default function AltavitaPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div className="space-y-3">
-                  <div className="relative h-64 sm:h-72 bg-[#F8F8F4] rounded-2xl border border-[#3B5B28]/15 flex items-center justify-center p-4 overflow-hidden">
+                  <div className="relative w-full h-64 sm:h-72 bg-[#F8F8F4] rounded-2xl border border-[#3B5B28]/15 flex items-center justify-center p-4 overflow-hidden select-none">
                     {quickViewProduct.badge && (
                       <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[10px] px-2.5 py-1 rounded-md shadow-xs border border-[#b89528] z-10">
                         {quickViewProduct.badge}
@@ -1563,11 +1563,15 @@ export default function AltavitaPage() {
                     )}
 
                     {quickViewProduct.images && quickViewProduct.images.length > 0 ? (
-                      <img
-                        src={quickViewProduct.images[activeModalImgIndex] || quickViewProduct.images[0]}
-                        alt={quickViewProduct.name}
-                        className="max-h-full max-w-full w-auto h-auto object-contain drop-shadow-md transition-all duration-300"
-                      />
+                      <div className="w-full h-full flex items-center justify-center p-2">
+                        <img
+                          key={activeModalImgIndex}
+                          src={quickViewProduct.images[activeModalImgIndex] || quickViewProduct.images[0]}
+                          alt={quickViewProduct.name}
+                          className="max-h-full max-w-full object-contain rounded-lg drop-shadow-md transition-all duration-300"
+                          style={{ width: 'auto', height: 'auto', maxHeight: '100%', maxWidth: '100%' }}
+                        />
+                      </div>
                     ) : (
                       <div className="w-20 h-28 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2 border-2 border-[#D4AF37]/50 relative overflow-hidden">
                         <div className="w-10 h-3 rounded-t-md bg-[#D4AF37] border-b border-amber-800/40 -mt-2 shadow-xs" />
@@ -1604,11 +1608,16 @@ export default function AltavitaPage() {
                         <button
                           key={idx}
                           onClick={() => setActiveModalImgIndex(idx)}
-                          className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all bg-[#F8F8F4] flex items-center justify-center ${
+                          className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all bg-[#F8F8F4] flex items-center justify-center shrink-0 ${
                             activeModalImgIndex === idx ? 'border-[#3B5B28] shadow-xs scale-105' : 'border-transparent opacity-60 hover:opacity-100'
                           }`}
                         >
-                          <img src={imgUrl} alt="" className="max-h-full max-w-full w-auto h-auto object-contain p-0.5" />
+                          <img
+                            src={imgUrl}
+                            alt=""
+                            className="max-h-full max-w-full object-contain p-0.5"
+                            style={{ width: 'auto', height: 'auto' }}
+                          />
                         </button>
                       ))}
                     </div>
