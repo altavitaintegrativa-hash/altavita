@@ -1535,7 +1535,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW (Marco de visualización estricto sin deformaciones) */}
+      {/* MODAL QUICK VIEW (Encuadre proporcional universal) */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1568,8 +1568,7 @@ export default function AltavitaPage() {
                           key={activeModalImgIndex}
                           src={quickViewProduct.images[activeModalImgIndex] || quickViewProduct.images[0]}
                           alt={quickViewProduct.name}
-                          className="max-h-full max-w-full object-contain rounded-lg drop-shadow-md transition-all duration-300"
-                          style={{ width: 'auto', height: 'auto', maxHeight: '100%', maxWidth: '100%' }}
+                          className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg drop-shadow-md transition-all duration-300"
                         />
                       </div>
                     ) : (
@@ -1615,8 +1614,7 @@ export default function AltavitaPage() {
                           <img
                             src={imgUrl}
                             alt=""
-                            className="max-h-full max-w-full object-contain p-0.5"
-                            style={{ width: 'auto', height: 'auto' }}
+                            className="max-h-full max-w-full w-auto h-auto object-contain p-0.5"
                           />
                         </button>
                       ))}
