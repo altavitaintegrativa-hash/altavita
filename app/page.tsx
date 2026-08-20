@@ -44,9 +44,6 @@ import { useProducts, Product } from '@/hooks/useProducts';
 
 const PUBLISHED_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv';
 
-/* ==========================================================================
-   ESPECIALIDADES MÉDICAS (11 ESPECIALIDADES OFICIALES)
-   ========================================================================== */
 export interface Specialty {
   id: string;
   name: string;
@@ -159,9 +156,6 @@ const SPECIALTIES_DATA: Specialty[] = [
   }
 ];
 
-/* ==========================================================================
-   CONFIGURACIÓN DEL BANNER HERO
-   ========================================================================== */
 interface HeroSlide {
   id: string;
   tag: string;
@@ -209,10 +203,8 @@ export default function AltavitaPage() {
   const [activeTab, setActiveTab] = useState<'inicio' | 'especialidades' | 'tienda' | 'nosotros' | 'contacto'>('inicio');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Sincronización en tiempo real con la planilla Google Sheets
   const { products: PRODUCTS_DATABASE, loading: productsLoading } = useProducts(PUBLISHED_SHEETS_CSV_URL);
 
-  // Hero Carousel State
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
 
@@ -232,7 +224,6 @@ export default function AltavitaPage() {
     return () => clearInterval(timer);
   }, [nextSlide, isSliderPaused]);
 
-  // Cart State
   interface CartItem {
     product: Product;
     quantity: number;
@@ -242,21 +233,17 @@ export default function AltavitaPage() {
   const [shippingOption, setShippingOption] = useState<'pickup' | 'local' | 'national'>('pickup');
   const [cartNotification, setCartNotification] = useState<string | null>(null);
 
-  // Product Store Filtering
   const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
   const [searchQuery, setSearchQuery] = useState('');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-  // Booking Modal State
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Medicina General');
 
-  // Checkout Modal State
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<'form' | 'success'>('form');
   const [customerData, setCustomerData] = useState({ name: '', rut: '', phone: '', email: '', address: '', city: 'La Serena' });
 
-  // Currency Formatter CLP
   const formatCLP = (amount: number) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
@@ -265,7 +252,6 @@ export default function AltavitaPage() {
     }).format(amount);
   };
 
-  // Cart Totals
   const cartItemCount = useMemo(() => cart.reduce((total, item) => total + item.quantity, 0), [cart]);
   const cartSubtotal = useMemo(() => cart.reduce((total, item) => total + item.product.salePrice * item.quantity, 0), [cart]);
   const shippingCost = useMemo(() => {
@@ -276,7 +262,6 @@ export default function AltavitaPage() {
   }, [cart, shippingOption]);
   const cartTotal = cartSubtotal + shippingCost;
 
-  // Cart Operations
   const addToCart = (product: Product, quantity = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -309,7 +294,6 @@ export default function AltavitaPage() {
     setCart((prev) => prev.filter((item) => item.product.id !== productId));
   };
 
-  // Filtered Products
   const filteredProducts = useMemo(() => {
     return PRODUCTS_DATABASE.filter((product) => {
       const matchesCategory = selectedCategory === 'Todos' || product.category === selectedCategory;
@@ -357,9 +341,7 @@ export default function AltavitaPage() {
   return (
     <div id="altavita-app-root" className="min-h-screen bg-[#F8F8F4] text-[#22311D] flex flex-col antialiased font-sans">
       
-      {/* ==========================================================================
-         TOP ANNOUNCEMENT BAR
-         ========================================================================== */}
+      {/* TOP ANNOUNCEMENT BAR */}
       <div id="top-announcement-bar" className="bg-[#3B5B28] text-[#F8F8F4] text-xs py-2 px-4 border-b border-[#22311D]/20">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
           <div className="flex items-center gap-4 text-xs font-medium">
@@ -406,13 +388,10 @@ export default function AltavitaPage() {
         </div>
       </div>
 
-      {/* ==========================================================================
-         NAVBAR CORPORATIVO CON LOGO OFICIAL
-         ========================================================================== */}
+      {/* NAVBAR */}
       <header id="main-header" className="sticky top-0 z-40 bg-[#F8F8F4]/95 backdrop-blur-md border-b border-[#3B5B28]/15 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          {/* Logo Corporativo Oficial */}
           <div
             id="brand-logo-container"
             onClick={() => {
@@ -442,7 +421,6 @@ export default function AltavitaPage() {
             </div>
           </div>
 
-          {/* Menú de Navegación Desktop */}
           <nav id="desktop-nav-menu" className="hidden md:flex items-center gap-1 lg:gap-2">
             {[
               { id: 'inicio', label: 'Inicio' },
@@ -470,7 +448,6 @@ export default function AltavitaPage() {
             ))}
           </nav>
 
-          {/* Botones de Acción */}
           <div className="flex items-center gap-2.5 sm:gap-3.5">
             <button
               id="header-cta-agendar"
@@ -513,7 +490,6 @@ export default function AltavitaPage() {
           </div>
         </div>
 
-        {/* Menú Mobile */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -551,7 +527,6 @@ export default function AltavitaPage() {
         </AnimatePresence>
       </header>
 
-      {/* Notificación Toast flotante */}
       <AnimatePresence>
         {cartNotification && (
           <motion.div
@@ -574,9 +549,7 @@ export default function AltavitaPage() {
 
       <main className="flex-1">
         
-        {/* ==========================================================================
-           1. HERO SLIDER DINÁMICO
-           ========================================================================== */}
+        {/* HERO SLIDER */}
         <section
           id="hero-slider-section"
           onMouseEnter={() => setIsSliderPaused(true)}
@@ -742,9 +715,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ==========================================================================
-           2. DUAL CARDS "ACCESOS DIRECTOS"
-           ========================================================================== */}
+        {/* DUAL CARDS */}
         <section id="dual-cards-section" className="py-12 md:py-16 bg-[#F8F8F4] -mt-6 sm:-mt-10 relative z-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
@@ -837,9 +808,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ==========================================================================
-           3. SECCIÓN DE ESPECIALIDADES MÉDICAS (11)
-           ========================================================================== */}
+        {/* ESPECIALIDADES */}
         <section id="especialidades-section" className="py-16 md:py-20 bg-[#F8F8F4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-12">
@@ -917,9 +886,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ==========================================================================
-           4. SECCIÓN CONSULTORIO.ME (AGENDAMIENTO INTEGRADO)
-           ========================================================================== */}
+        {/* CONSULTORIO.ME */}
         <section id="agendamiento-section" className="py-16 bg-white border-y border-[#3B5B28]/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-10">
@@ -1011,9 +978,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ==========================================================================
-           5. TIENDA DIGITAL (Sincronizada en vivo con Google Sheets)
-           ========================================================================== */}
+        {/* TIENDA DIGITAL (Lector con soporte para Foto) */}
         <section id="tienda-section" className="py-16 md:py-24 bg-[#F8F8F4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-10">
@@ -1031,7 +996,6 @@ export default function AltavitaPage() {
               </p>
             </div>
 
-            {/* Barra de Búsqueda y Filtros */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 border border-[#3B5B28]/15 shadow-sm mb-10 space-y-4">
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="relative w-full md:w-80">
@@ -1073,7 +1037,6 @@ export default function AltavitaPage() {
               </div>
             </div>
 
-            {/* Estado de carga de productos */}
             {productsLoading && (
               <div className="flex flex-col items-center justify-center py-12 gap-3">
                 <RefreshCw className="w-8 h-8 text-[#3B5B28] animate-spin" />
@@ -1081,7 +1044,6 @@ export default function AltavitaPage() {
               </div>
             )}
 
-            {/* Grilla de Productos */}
             {!productsLoading && filteredProducts.length === 0 ? (
               <div className="bg-white rounded-2xl p-12 text-center border border-[#3B5B28]/15 space-y-4 max-w-md mx-auto">
                 <Search className="w-10 h-10 text-[#3B5B28]/40 mx-auto" />
@@ -1108,35 +1070,44 @@ export default function AltavitaPage() {
                     className="bg-white rounded-2xl border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:-translate-y-1"
                   >
                     <div>
-                      <div className={`relative h-48 bg-gradient-to-br ${product.colorScheme.bg} p-6 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden`}>
+                      <div className={`relative h-52 bg-gradient-to-br ${product.colorScheme.bg} p-4 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden`}>
                         {product.badge && (
-                          <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[11px] px-2.5 py-1 rounded-md shadow-md border border-[#b89528] tracking-wide">
+                          <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[11px] px-2.5 py-1 rounded-md shadow-md border border-[#b89528] tracking-wide z-10">
                             {product.badge}
                           </div>
                         )}
-                        <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-xs text-[#3B5B28] text-[10px] font-bold px-2 py-0.5 rounded-md border border-[#3B5B28]/20">
+                        <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-xs text-[#3B5B28] text-[10px] font-bold px-2 py-0.5 rounded-md border border-[#3B5B28]/20 z-10">
                           {product.format}
                         </div>
 
-                        <div className="relative group-hover:scale-105 transition-transform duration-300">
-                          <div className="w-20 h-28 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2 border-2 border-[#D4AF37]/50 relative overflow-hidden">
-                            <div className="w-10 h-3 rounded-t-md bg-[#D4AF37] border-b border-amber-800/40 -mt-2 shadow-xs" />
-                            <div className="w-full bg-[#F8F8F4] rounded-md p-1 text-center shadow-xs">
-                              <div className="w-3.5 h-3.5 mx-auto rounded-full bg-[#3B5B28] mb-0.5 flex items-center justify-center">
-                                <Leaf className="w-2 h-2 text-[#D4AF37]" />
+                        {/* Renderizado de Fotografía Real vs Mockup CSS */}
+                        <div className="relative w-full h-36 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                          {product.imageUrl ? (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="w-full h-full object-contain drop-shadow-md"
+                            />
+                          ) : (
+                            <div className="w-20 h-28 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2 border-2 border-[#D4AF37]/50 relative overflow-hidden">
+                              <div className="w-10 h-3 rounded-t-md bg-[#D4AF37] border-b border-amber-800/40 -mt-2 shadow-xs" />
+                              <div className="w-full bg-[#F8F8F4] rounded-md p-1 text-center shadow-xs">
+                                <div className="w-3.5 h-3.5 mx-auto rounded-full bg-[#3B5B28] mb-0.5 flex items-center justify-center">
+                                  <Leaf className="w-2 h-2 text-[#D4AF37]" />
+                                </div>
+                                <p className="text-[7px] font-black uppercase text-[#22311D] truncate">
+                                  {product.name.split(' ')[0]}
+                                </p>
+                                <p className="text-[5px] font-semibold text-[#5B8246] uppercase">Altavita</p>
                               </div>
-                              <p className="text-[7px] font-black uppercase text-[#22311D] truncate">
-                                {product.name.split(' ')[0]}
-                              </p>
-                              <p className="text-[5px] font-semibold text-[#5B8246] uppercase">Altavita</p>
+                              <div className="text-[6px] text-[#D4AF37] font-bold">100% PURO</div>
                             </div>
-                            <div className="text-[6px] text-[#D4AF37] font-bold">100% PURO</div>
-                          </div>
+                          )}
                         </div>
 
                         <button
                           onClick={() => setQuickViewProduct(product)}
-                          className="absolute bottom-3 bg-white/90 hover:bg-white text-[#22311D] text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
+                          className="absolute bottom-3 bg-white/90 hover:bg-white text-[#22311D] text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-10"
                         >
                           <Info className="w-3 h-3 text-[#3B5B28]" /> Ver detalles
                         </button>
@@ -1206,9 +1177,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ==========================================================================
-           6. SECCIÓN NOSOTROS
-           ========================================================================== */}
+        {/* NOSOTROS */}
         <section id="nosotros-section" className="py-16 md:py-20 bg-white border-t border-[#3B5B28]/15">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -1260,9 +1229,7 @@ export default function AltavitaPage() {
         </section>
       </main>
 
-      {/* ==========================================================================
-         CARRITO DE COMPRAS DESPLEGABLE
-         ========================================================================== */}
+      {/* CARRITO DE COMPRAS */}
       <AnimatePresence>
         {isCartOpen && (
           <div id="cart-drawer-overlay" className="fixed inset-0 z-50 overflow-hidden">
@@ -1308,8 +1275,12 @@ export default function AltavitaPage() {
                         id={`cart-item-${item.product.id}`}
                         className="bg-white p-3.5 rounded-xl border border-[#3B5B28]/15 shadow-xs flex items-center justify-between gap-3"
                       >
-                        <div className="w-10 h-10 rounded-lg bg-[#5B8246]/10 flex items-center justify-center shrink-0">
-                          <Leaf className="w-5 h-5 text-[#3B5B28]" />
+                        <div className="w-12 h-12 rounded-lg bg-[#5B8246]/10 flex items-center justify-center shrink-0 overflow-hidden">
+                          {item.product.imageUrl ? (
+                            <img src={item.product.imageUrl} alt={item.product.name} className="w-full h-full object-contain p-1" />
+                          ) : (
+                            <Leaf className="w-5 h-5 text-[#3B5B28]" />
+                          )}
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -1414,9 +1385,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* ==========================================================================
-         MODAL CONSULTORIO.ME
-         ========================================================================== */}
+      {/* MODAL CONSULTORIO.ME */}
       <AnimatePresence>
         {isBookingModalOpen && (
           <div id="booking-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1451,9 +1420,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* ==========================================================================
-         MODAL CHECKOUT MERCADOPAGO
-         ========================================================================== */}
+      {/* MODAL CHECKOUT */}
       <AnimatePresence>
         {isCheckoutModalOpen && (
           <div id="checkout-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1521,9 +1488,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* ==========================================================================
-         MODAL QUICK VIEW
-         ========================================================================== */}
+      {/* MODAL QUICK VIEW */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1535,6 +1500,14 @@ export default function AltavitaPage() {
                   <h3 className="font-serif font-bold text-lg text-[#22311D]">{quickViewProduct.name}</h3>
                 </div>
                 <button onClick={() => setQuickViewProduct(null)}><X className="w-4 h-4 text-stone-400" /></button>
+              </div>
+
+              <div className="h-40 bg-[#F8F8F4] rounded-2xl flex items-center justify-center p-2 border border-[#3B5B28]/10 overflow-hidden">
+                {quickViewProduct.imageUrl ? (
+                  <img src={quickViewProduct.imageUrl} alt={quickViewProduct.name} className="w-full h-full object-contain" />
+                ) : (
+                  <Leaf className="w-10 h-10 text-[#3B5B28]" />
+                )}
               </div>
 
               <p className="text-xs text-[#22311D]/80">{quickViewProduct.description}</p>
@@ -1572,9 +1545,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* ==========================================================================
-         FOOTER CORPORATIVO
-         ========================================================================== */}
+      {/* FOOTER CORPORATIVO */}
       <footer id="contacto-section" className="bg-[#22311D] text-[#F8F8F4] pt-16 pb-12 border-t border-[#3B5B28]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
