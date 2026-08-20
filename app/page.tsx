@@ -32,14 +32,12 @@ import {
   ShieldCheck,
   Search,
   ArrowRight,
-  Info,
   Menu,
   Star,
   Check,
   CreditCard,
   Building2,
-  RefreshCw,
-  Eye
+  RefreshCw
 } from 'lucide-react';
 import { useProducts, Product } from '@/hooks/useProducts';
 
@@ -405,9 +403,9 @@ export default function AltavitaPage() {
               setActiveTab('inicio');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-3.5 cursor-pointer group"
           >
-            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 bg-white border border-[#D4AF37]/30 shadow-xs">
+            <div className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 bg-white border border-[#D4AF37]/40 shadow-xs shrink-0">
               <img
                 src="/logo.png"
                 alt="Altavita Salud Integrativa Logo"
@@ -417,12 +415,12 @@ export default function AltavitaPage() {
 
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-serif font-bold text-xl sm:text-2xl text-[#b89528] tracking-tight">AltaVita</span>
+                <span className="font-serif font-bold text-2xl sm:text-3xl text-[#b89528] tracking-tight">AltaVita</span>
                 <span className="text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#3B5B28] border border-[#D4AF37]/40 tracking-wider">
                   La Serena
                 </span>
               </div>
-              <span className="text-[10px] font-bold tracking-widest text-[#5B8246] uppercase -mt-0.5 font-sans">
+              <span className="text-[11px] font-bold tracking-widest text-[#5B8246] uppercase -mt-0.5 font-sans">
                 SALUD INTEGRATIVA
               </span>
             </div>
@@ -1077,10 +1075,10 @@ export default function AltavitaPage() {
                     className="bg-white rounded-2xl border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between overflow-hidden group hover:-translate-y-1"
                   >
                     <div>
-                      {/* Contenedor de Imagen (Abre Modal al Clic) */}
+                      {/* Contenedor de Imagen Agrandado (Abre Modal al Clic) */}
                       <div
                         onClick={() => openQuickView(product)}
-                        className={`relative h-56 bg-gradient-to-br ${product.colorScheme.bg} p-4 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden cursor-pointer`}
+                        className={`relative h-64 bg-gradient-to-br ${product.colorScheme.bg} p-4 flex flex-col items-center justify-center border-b border-[#3B5B28]/10 overflow-hidden cursor-pointer`}
                       >
                         {product.badge && (
                           <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[11px] px-2.5 py-1 rounded-md shadow-md border border-[#b89528] tracking-wide z-10">
@@ -1091,8 +1089,8 @@ export default function AltavitaPage() {
                           {product.format}
                         </div>
 
-                        {/* Imagen con Object-Contain sin recortar */}
-                        <div className="relative w-full h-40 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                        {/* Imagen Agrandada con Object-Contain sin recortar */}
+                        <div className="relative w-full h-52 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                           {product.imageUrl ? (
                             <img
                               src={product.imageUrl}
@@ -1100,25 +1098,21 @@ export default function AltavitaPage() {
                               className="w-full h-full object-contain drop-shadow-md"
                             />
                           ) : (
-                            <div className="w-20 h-28 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2 border-2 border-[#D4AF37]/50 relative overflow-hidden">
-                              <div className="w-10 h-3 rounded-t-md bg-[#D4AF37] border-b border-amber-800/40 -mt-2 shadow-xs" />
-                              <div className="w-full bg-[#F8F8F4] rounded-md p-1 text-center shadow-xs">
-                                <div className="w-3.5 h-3.5 mx-auto rounded-full bg-[#3B5B28] mb-0.5 flex items-center justify-center">
-                                  <Leaf className="w-2 h-2 text-[#D4AF37]" />
+                            <div className="w-24 h-32 rounded-2xl bg-gradient-to-b from-[#22311D] to-[#3B5B28] shadow-lg flex flex-col items-center justify-between p-2.5 border-2 border-[#D4AF37]/50 relative overflow-hidden">
+                              <div className="w-12 h-3.5 rounded-t-md bg-[#D4AF37] border-b border-amber-800/40 -mt-2.5 shadow-xs" />
+                              <div className="w-full bg-[#F8F8F4] rounded-md p-1.5 text-center shadow-xs">
+                                <div className="w-4 h-4 mx-auto rounded-full bg-[#3B5B28] mb-0.5 flex items-center justify-center">
+                                  <Leaf className="w-2.5 h-2.5 text-[#D4AF37]" />
                                 </div>
-                                <p className="text-[7px] font-black uppercase text-[#22311D] truncate">
+                                <p className="text-[8px] font-black uppercase text-[#22311D] truncate">
                                   {product.name.split(' ')[0]}
                                 </p>
-                                <p className="text-[5px] font-semibold text-[#5B8246] uppercase">Altavita</p>
+                                <p className="text-[6px] font-semibold text-[#5B8246] uppercase">Altavita</p>
                               </div>
-                              <div className="text-[6px] text-[#D4AF37] font-bold">100% PURO</div>
+                              <div className="text-[7px] text-[#D4AF37] font-bold">100% PURO</div>
                             </div>
                           )}
                         </div>
-
-                        <span className="absolute bottom-3 bg-white/90 group-hover:bg-[#3B5B28] group-hover:text-white text-[#22311D] text-[11px] font-bold px-3 py-1.5 rounded-full shadow-xs transition-all flex items-center gap-1 z-10">
-                          <Eye className="w-3.5 h-3.5 text-[#D4AF37]" /> Ver detalles
-                        </span>
                       </div>
 
                       <div className="p-5 space-y-3">
@@ -1500,7 +1494,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW (Galería de hasta 5 imágenes + Visor) */}
+      {/* MODAL QUICK VIEW */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1564,7 +1558,7 @@ export default function AltavitaPage() {
                     )}
                   </div>
 
-                  {/* Strip de Miniaturas (hasta 5 fotos) */}
+                  {/* Strip de Miniaturas */}
                   {quickViewProduct.images && quickViewProduct.images.length > 1 && (
                     <div className="flex items-center gap-2 overflow-x-auto pb-1 justify-center">
                       {quickViewProduct.images.map((imgUrl, idx) => (
@@ -1623,20 +1617,25 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* FOOTER CORPORATIVO */}
+      {/* FOOTER CORPORATIVO CON LOGO Y CORREO OFICIAL */}
       <footer id="contacto-section" className="bg-[#22311D] text-[#F8F8F4] pt-16 pb-12 border-t border-[#3B5B28]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
             <div className="lg:col-span-4 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-white p-0.5 border border-[#D4AF37]">
+              <div className="flex items-center gap-4">
+                <div className="w-20 h-20 rounded-full overflow-hidden flex items-center justify-center bg-white p-1 border-2 border-[#D4AF37] shrink-0 shadow-md">
                   <img
                     src="/logo.png"
                     alt="Altavita Logo"
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <span className="font-serif font-bold text-2xl text-[#D4AF37] tracking-tight">AltaVita</span>
+                <div className="flex flex-col">
+                  <span className="font-serif font-bold text-3xl text-[#D4AF37] tracking-tight">AltaVita</span>
+                  <span className="text-xs font-bold tracking-widest text-[#5B8246] uppercase font-sans">
+                    SALUD INTEGRATIVA
+                  </span>
+                </div>
               </div>
               <p className="text-xs sm:text-sm text-[#F8F8F4]/80 leading-relaxed">
                 Centro médico y botica de salud integrativa en La Serena, Chile. Atención clínica en 11 especialidades y suplementación natural.
@@ -1713,8 +1712,8 @@ export default function AltavitaPage() {
                   <Mail className="w-4 h-4 text-[#D4AF37] shrink-0 mt-1" />
                   <div>
                     <strong className="block text-white font-semibold">Correo Oficial:</strong>
-                    <a href="mailto:altavita.integrativa@gmail.com" className="hover:text-[#D4AF37] underline">
-                      altavita.integrativa@gmail.com
+                    <a href="mailto:contacto@altavita.cl" className="hover:text-[#D4AF37] underline">
+                      contacto@altavita.cl
                     </a>
                   </div>
                 </div>
