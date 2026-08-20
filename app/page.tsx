@@ -233,7 +233,7 @@ const HERO_SLIDES: HeroSlide[] = [
     ctaAction: 'store',
     secondaryText: 'Consultar por WhatsApp',
     secondaryAction: 'whatsapp',
-    bgImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1600&q=80',
+    bgImage: '/gotarios-portada.jpg',
     badgeContent: 'Descuento del 25% · Envíos y retiro en clínica'
   }
 ];
@@ -814,7 +814,7 @@ export default function AltavitaPage() {
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                   style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1200&q=80')`
+                    backgroundImage: `url('/frascos-compra.jpg')`
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#22311D] via-[#22311D]/80 to-[#22311D]/30 transition-opacity group-hover:opacity-95" />
@@ -1535,7 +1535,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW (Encuadre proporcional universal) */}
+      {/* MODAL QUICK VIEW (Marco de visualización estricto sin deformaciones ni recortes) */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1555,7 +1555,7 @@ export default function AltavitaPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div className="space-y-3">
-                  <div className="relative w-full h-64 sm:h-72 bg-[#F8F8F4] rounded-2xl border border-[#3B5B28]/15 flex items-center justify-center p-4 overflow-hidden select-none">
+                  <div className="relative w-full aspect-square bg-[#F8F8F4] rounded-2xl border border-[#3B5B28]/15 flex items-center justify-center p-4 overflow-hidden select-none">
                     {quickViewProduct.badge && (
                       <div className="absolute top-3 left-3 bg-[#D4AF37] text-slate-950 font-extrabold text-[10px] px-2.5 py-1 rounded-md shadow-xs border border-[#b89528] z-10">
                         {quickViewProduct.badge}
@@ -1563,12 +1563,12 @@ export default function AltavitaPage() {
                     )}
 
                     {quickViewProduct.images && quickViewProduct.images.length > 0 ? (
-                      <div className="w-full h-full flex items-center justify-center p-2">
+                      <div className="w-full h-full flex items-center justify-center">
                         <img
                           key={activeModalImgIndex}
                           src={quickViewProduct.images[activeModalImgIndex] || quickViewProduct.images[0]}
                           alt={quickViewProduct.name}
-                          className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg drop-shadow-md transition-all duration-300"
+                          className="w-full h-full object-contain rounded-lg drop-shadow-md transition-all duration-300"
                         />
                       </div>
                     ) : (
@@ -1614,7 +1614,7 @@ export default function AltavitaPage() {
                           <img
                             src={imgUrl}
                             alt=""
-                            className="max-h-full max-w-full w-auto h-auto object-contain p-0.5"
+                            className="w-full h-full object-contain p-0.5"
                           />
                         </button>
                       ))}
