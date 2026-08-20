@@ -37,7 +37,8 @@ import {
   Check,
   CreditCard,
   Building2,
-  RefreshCw
+  RefreshCw,
+  Info
 } from 'lucide-react';
 import { useProducts, Product } from '@/hooks/useProducts';
 
@@ -1513,7 +1514,6 @@ export default function AltavitaPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                {/* Visor de Galería con miniaturas */}
                 <div className="space-y-3">
                   <div className="relative h-64 sm:h-72 bg-[#F8F8F4] rounded-2xl border border-[#3B5B28]/15 flex items-center justify-center p-4 overflow-hidden">
                     {quickViewProduct.badge && (
@@ -1558,7 +1558,6 @@ export default function AltavitaPage() {
                     )}
                   </div>
 
-                  {/* Strip de Miniaturas */}
                   {quickViewProduct.images && quickViewProduct.images.length > 1 && (
                     <div className="flex items-center gap-2 overflow-x-auto pb-1 justify-center">
                       {quickViewProduct.images.map((imgUrl, idx) => (
@@ -1576,7 +1575,6 @@ export default function AltavitaPage() {
                   )}
                 </div>
 
-                {/* Detalles y Beneficios */}
                 <div className="space-y-4">
                   <p className="text-xs text-[#22311D]/80 leading-relaxed font-medium">{quickViewProduct.description}</p>
 
@@ -1617,7 +1615,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* FOOTER CORPORATIVO CON LOGO Y CORREO OFICIAL */}
+      {/* FOOTER CORPORATIVO */}
       <footer id="contacto-section" className="bg-[#22311D] text-[#F8F8F4] pt-16 pb-12 border-t border-[#3B5B28]/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
