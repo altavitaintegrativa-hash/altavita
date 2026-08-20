@@ -15,6 +15,7 @@ export interface Product {
   reviewsCount: number;
   format: string;
   badge?: string;
+  imageUrl?: string;
   colorScheme: {
     bg: string;
     badgeBg: string;
@@ -123,6 +124,8 @@ export function useProducts(csvUrlOrSheetId?: string) {
           const benefitsRaw = getValue('benefits');
           const benefits = benefitsRaw ? benefitsRaw.split(';').map((b) => b.trim()) : ['100% Natural'];
 
+          const img = getValue('imageurl') || getValue('image') || getValue('imagen') || undefined;
+
           fetchedProducts.push({
             id: getValue('id') || `sheet-prod-${i}`,
             name,
@@ -136,6 +139,7 @@ export function useProducts(csvUrlOrSheetId?: string) {
             reviewsCount: 25 + i * 2,
             format: getValue('format') || 'Frasco',
             badge: getValue('badge') || undefined,
+            imageUrl: img,
             colorScheme: {
               bg: category === 'Hongos Adaptógenos' ? 'from-amber-900/15 to-stone-100' : 'from-emerald-900/15 to-stone-100',
               badgeBg: 'bg-[#D4AF37] text-slate-950'
