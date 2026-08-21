@@ -41,133 +41,11 @@ import {
   Info
 } from 'lucide-react';
 import { useProducts, Product } from '@/hooks/useProducts';
+import { useSpecialties } from '@/hooks/useSpecialties';
 
-const PUBLISHED_SHEETS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv';
+const PUBLISHED_PRODUCTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv&gid=0';
+const PUBLISHED_SPECIALTIES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv&gid=1840435494';
 const DEFAULT_BOOKING_URL = 'https://consultorio.me/pre/selectexternal/417602?external=true';
-
-export interface Specialty {
-  id: string;
-  name: string;
-  areaColor: string;
-  badgeLabel: string;
-  iconName: string;
-  shortDesc: string;
-  focus: string[];
-  bookingUrl?: string;
-}
-
-const SPECIALTIES_DATA: Specialty[] = [
-  {
-    id: 'medicina-general',
-    name: 'Medicina General',
-    areaColor: '#3B5B28',
-    badgeLabel: 'Salud Primaria & Preventiva',
-    iconName: 'Stethoscope',
-    shortDesc: 'Evaluación clínica integral, diagnóstico oportuno, orden de exámenes y prevención en salud.',
-    focus: ['Chequeo médico integral', 'Manejo de patologías generales', 'Orden e interpretación de exámenes'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'pediatria',
-    name: 'Pediatría',
-    areaColor: '#C53030',
-    badgeLabel: 'Salud Infanto-Juvenil',
-    iconName: 'Baby',
-    shortDesc: 'Control de desarrollo, nutrición pediátrica y atención médica especializada para niños y adolescentes.',
-    focus: ['Control de niño sano', 'Desarrollo psicomotor y físico', 'Atención de morbilidad infantil'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'otomodelacion',
-    name: 'Otomodelación',
-    areaColor: '#805AD5',
-    badgeLabel: 'Procedimiento Estético',
-    iconName: 'Sparkles',
-    shortDesc: 'Técnica ambulatoria no quirúrgica para remodelar y armonizar el pabellón auricular de forma segura.',
-    focus: ['Remodelación sin pabellón quirúrgico', 'Procedimiento ambulatorio', 'Resultados inmediatos'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'quiropraxia',
-    name: 'Quiropraxia',
-    areaColor: '#DD6B20',
-    badgeLabel: 'Columna & Postura',
-    iconName: 'Activity',
-    shortDesc: 'Ajustes articulares y vertebrales para aliviar restricciones biomecánicas y dolor de espalda.',
-    focus: ['Ajustes vertebrales', 'Alivio de lumbalgia y cervicalgia', 'Corrección postura y ergonomía'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'traumatologia',
-    name: 'Traumatología',
-    areaColor: '#2B6CB0',
-    badgeLabel: 'Sistema Osteoarticular',
-    iconName: 'Bone',
-    shortDesc: 'Diagnóstico y manejo de lesiones musculares, articulares, tendinosas y molestias óseas.',
-    focus: ['Tratamiento de dolor articular', 'Lesiones tendinosas y musculares', 'Evaluación física completa'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'estetica-no-invasiva',
-    name: 'Estética No Invasiva',
-    areaColor: '#D53F8C',
-    badgeLabel: 'Armonización & Cuidado Celular',
-    iconName: 'Flame',
-    shortDesc: 'Tratamientos dermocosméticos y faciales para realzar la vitalidad y frescura natural de la piel.',
-    focus: ['Tratamientos de revitalización', 'Limpieza y cuidado facial', 'Procedimientos no invasivos'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'kinesiologia',
-    name: 'Kinesiología',
-    areaColor: '#319795',
-    badgeLabel: 'Rehabilitación & Movimiento',
-    iconName: 'Activity',
-    shortDesc: 'Terapia física para reintegro funcional, rehabilitación traumatológica y acondicionamiento muscular.',
-    focus: ['Rehabilitación traumatológica', 'Terapia manual dirigida', 'Acondicionamiento físico'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'psicologia',
-    name: 'Psicología',
-    areaColor: '#3182CE',
-    badgeLabel: 'Salud Mental & Bienestar',
-    iconName: 'Brain',
-    shortDesc: 'Acompañamiento psicoterapéutico individual para adultos y jóvenes en gestión del estrés y ansiedad.',
-    focus: ['Gestión de ansiedad y estrés', 'Psicoterapia individual', 'Desarrollo de herramientas emocionales'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'fonoaudiologia',
-    name: 'Fonoaudiología',
-    areaColor: '#D69E2E',
-    badgeLabel: 'Comunicación & Lenguaje',
-    iconName: 'MessageSquare',
-    shortDesc: 'Evaluación y tratamiento en trastornos del habla, lenguaje, salud vocal y deglución.',
-    focus: ['Trastornos del habla y lenguaje', 'Evaluación vocal profesional', 'Terapia de deglución'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'terapia-ocupacional',
-    name: 'Terapia Ocupacional',
-    areaColor: '#2B6CB0',
-    badgeLabel: 'Integración Sensorial & Autonomía',
-    iconName: 'Compass',
-    shortDesc: 'Evaluación sensorial, estimulación cognitiva y apoyo en el desarrollo de la vida diaria y neurodivergencias.',
-    focus: ['Integración sensorial y apoyo TEA', 'Estimulación cognitiva', 'Estrategias para autonomía'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  },
-  {
-    id: 'medicina-complementaria',
-    name: 'Medicina Complementaria',
-    areaColor: '#5B8246',
-    badgeLabel: 'Enfoque Holístico & Bienestar',
-    iconName: 'Leaf',
-    shortDesc: 'Terapias complementarias para favorecer el equilibrio físico, mental y energético del organismo.',
-    focus: ['Enfoque integral de salud', 'Terapias de bienestar corporal', 'Apoyo en autorregulación'],
-    bookingUrl: DEFAULT_BOOKING_URL
-  }
-];
 
 interface HeroSlide {
   id: string;
@@ -242,7 +120,8 @@ export default function AltavitaPage() {
   const [activeTab, setActiveTab] = useState<'inicio' | 'especialidades' | 'tienda' | 'nosotros' | 'contacto'>('inicio');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { products: PRODUCTS_DATABASE, loading: productsLoading } = useProducts(PUBLISHED_SHEETS_CSV_URL);
+  const { products: PRODUCTS_DATABASE, loading: productsLoading } = useProducts(PUBLISHED_PRODUCTS_CSV_URL);
+  const { specialties: SPECIALTIES_DATA, loading: specialtiesLoading } = useSpecialties(PUBLISHED_SPECIALTIES_CSV_URL);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
@@ -867,63 +746,70 @@ export default function AltavitaPage() {
               </p>
             </div>
 
-            <div id="specialties-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {SPECIALTIES_DATA.map((specialty, idx) => (
-                <div
-                  key={specialty.id}
-                  id={`specialty-card-${specialty.id}`}
-                  className="group bg-white rounded-2xl p-6 border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
-                >
-                  <div className="absolute top-0 left-0 right-0 h-1.5" style={{ backgroundColor: specialty.areaColor }} />
+            {specialtiesLoading ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
+                <RefreshCw className="w-8 h-8 text-[#3B5B28] animate-spin" />
+                <p className="text-xs font-semibold text-[#3B5B28]">Cargando equipo médico en vivo desde Google Sheets...</p>
+              </div>
+            ) : (
+              <div id="specialties-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {SPECIALTIES_DATA.map((specialty, idx) => (
+                  <div
+                    key={specialty.id}
+                    id={`specialty-card-${specialty.id}`}
+                    className="group bg-white rounded-2xl p-6 border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-1.5" style={{ backgroundColor: specialty.areaColor }} />
 
-                  <div>
-                    <div className="flex items-start justify-between gap-3 mb-4">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-xs transition-transform group-hover:scale-110"
-                        style={{ backgroundColor: `${specialty.areaColor}15`, border: `1px solid ${specialty.areaColor}30` }}
-                      >
-                        {renderSpecialtyIcon(specialty.iconName, specialty.areaColor)}
-                      </div>
-                      <span
-                        className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-right max-w-[130px]"
-                        style={{ backgroundColor: `${specialty.areaColor}10`, color: specialty.areaColor }}
-                      >
-                        {specialty.badgeLabel}
-                      </span>
-                    </div>
-
-                    <h3 className="font-serif text-xl font-bold mb-2 tracking-tight" style={{ color: specialty.areaColor }}>
-                      {idx + 1}. {specialty.name}
-                    </h3>
-
-                    <p className="text-xs sm:text-sm text-[#22311D]/80 leading-relaxed mb-4">
-                      {specialty.shortDesc}
-                    </p>
-
-                    <div className="space-y-1.5 mb-5 pt-3 border-t border-[#3B5B28]/10">
-                      {specialty.focus.map((item, fIdx) => (
-                        <div key={fIdx} className="flex items-center gap-1.5 text-xs text-[#22311D]/75">
-                          <Check className="w-3.5 h-3.5 shrink-0" style={{ color: specialty.areaColor }} />
-                          <span>{item}</span>
+                    <div>
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center shadow-xs transition-transform group-hover:scale-110"
+                          style={{ backgroundColor: `${specialty.areaColor}15`, border: `1px solid ${specialty.areaColor}30` }}
+                        >
+                          {renderSpecialtyIcon(specialty.iconName, specialty.areaColor)}
                         </div>
-                      ))}
+                        <span
+                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-right max-w-[130px]"
+                          style={{ backgroundColor: `${specialty.areaColor}10`, color: specialty.areaColor }}
+                        >
+                          {specialty.badgeLabel}
+                        </span>
+                      </div>
+
+                      <h3 className="font-serif text-xl font-bold mb-2 tracking-tight" style={{ color: specialty.areaColor }}>
+                        {idx + 1}. {specialty.name}
+                      </h3>
+
+                      <p className="text-xs sm:text-sm text-[#22311D]/80 leading-relaxed mb-4">
+                        {specialty.shortDesc}
+                      </p>
+
+                      <div className="space-y-1.5 mb-5 pt-3 border-t border-[#3B5B28]/10">
+                        {specialty.focus.map((item, fIdx) => (
+                          <div key={fIdx} className="flex items-center gap-1.5 text-xs text-[#22311D]/75">
+                            <Check className="w-3.5 h-3.5 shrink-0" style={{ color: specialty.areaColor }} />
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-[#3B5B28]/10">
+                      <button
+                        id={`btn-agendar-specialty-${specialty.id}`}
+                        onClick={() => openBookingForSpecialty(specialty.name, specialty.bookingUrl)}
+                        className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
+                        style={{ backgroundColor: specialty.areaColor }}
+                      >
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>Agendar {specialty.name}</span>
+                      </button>
                     </div>
                   </div>
-
-                  <div className="pt-4 border-t border-[#3B5B28]/10">
-                    <button
-                      id={`btn-agendar-specialty-${specialty.id}`}
-                      onClick={() => openBookingForSpecialty(specialty.name, specialty.bookingUrl)}
-                      className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
-                      style={{ backgroundColor: specialty.areaColor }}
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>Agendar {specialty.name}</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
