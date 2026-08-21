@@ -1,20 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Altavita Salud Integrativa — Sitio Web & E-commerce
 
-# Run and deploy your AI Studio app
+Plataforma web corporativa y botica digital para **Altavita Salud Integrativa** (La Serena, Chile). Incluye agendamiento médico en tiempo real para 11 especialidades clínicas, tienda en línea sincronizada en vivo con Google Sheets, módulo de carrito de compras y pasarela de pagos.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/864e1e47-b604-4d39-b71b-0fcc4d6c5e4e
+## 🚀 Características Principales
 
-## Run Locally
+* **Catálogo Sincronizado en Vivo:** Sincronización automática de inventario, precios normales, ofertas (25% descuento) e imágenes (hasta 5 fotografías por producto) gestionados directamente desde Google Sheets.
+* **Visor Emergente Adaptativo:** Galería de productos interactiva con miniaturas, visor adaptativo sin deformaciones y detalle de beneficios.
+* **Agendamiento Clínico Integrado:** Conexión directa mediante iframe dinámico con el sistema **Consultorio.me** filtrado por especialidades y profesionales.
+* **Carrito de Compras Multicanal:** Generación de pedidos directo a WhatsApp corporativo y simulación/checkout seguro con MercadoPago.
+* **Firma Corporativa & Contacto:** Configuración de correos corporativos oficiales (`contacto@altavita.cl`), canales de contacto directo y mapa de ubicación presencial.
 
-**Prerequisites:**  Node.js
+---
 
+## 🛠️ Stack Tecnológico
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+* **Framework:** Next.js 15 (App Router)
+* **Lenguaje:** TypeScript
+* **Estilos:** Tailwind CSS
+* **Animaciones:** Motion / Framer Motion
+* **Iconografía:** Lucide React
+* **Base de Datos / CMS:** Google Sheets API (CSV Parser Native)
+* **Agendamiento:** Consultorio.me Integration Widget
+
+---
+
+## 💻 Desarrollo Local
+
+1. **Clonar repositorio e instalar dependencias:**
+   ```bash
+   git clone [https://github.com/altavitaintegrativa-hash/altavita.git](https://github.com/altavitaintegrativa-hash/altavita.git)
+   cd altavita
+   npm install
