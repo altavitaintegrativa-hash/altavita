@@ -66,11 +66,11 @@ const HERO_SLIDES: HeroSlide[] = [
     id: 'centro-medico',
     tag: 'CENTRO MÉDICO INTEGRATIVO · LA SERENA',
     title: 'Salud Integrativa y Bienestar en La Serena',
-    subtitle: 'Atención médica especializada, 11 especialidades clínicas y terapias complementarias para cuidar de ti.',
+    subtitle: 'Atención médica especializada, especialidades clínicas y terapias complementarias para cuidar de ti.',
     ctaText: 'Agendar Hora Médica',
     ctaVariant: 'gold',
     ctaAction: 'booking',
-    secondaryText: 'Ver 11 Especialidades',
+    secondaryText: 'Ver Especialidades',
     secondaryAction: 'specialties',
     bgImage: '/recepcion.jpg',
     badgeContent: 'Los Hibiscus 740, La Serena · Reserva Online 24/7'
@@ -121,7 +121,7 @@ export default function AltavitaPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { products: PRODUCTS_DATABASE, loading: productsLoading } = useProducts(PUBLISHED_PRODUCTS_CSV_URL);
-  const { specialties: SPECIALTIES_DATA, loading: specialtiesLoading } = useSpecialties(PUBLISHED_SPECIALTIES_CSV_URL);
+  const { specialties: SPECIALTIES_DATA } = useSpecialties(PUBLISHED_SPECIALTIES_CSV_URL);
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
@@ -259,6 +259,7 @@ export default function AltavitaPage() {
       case 'Brain': return <Brain {...props} />;
       case 'MessageSquare': return <MessageSquare {...props} />;
       case 'Compass': return <Compass {...props} />;
+      case 'Heart': return <Heart {...props} />;
       case 'Leaf':
       default: return <Leaf {...props} />;
     }
@@ -424,7 +425,7 @@ export default function AltavitaPage() {
             >
               {[
                 { id: 'inicio', label: 'Inicio' },
-                { id: 'especialidades', label: 'Especialidades Médicas (11)' },
+                { id: 'especialidades', label: 'Especialidades Médicas' },
                 { id: 'tienda', label: 'Tienda de Suplementos' },
                 { id: 'nosotros', label: 'Sobre Nosotros' },
                 { id: 'contacto', label: 'Ubicación & Contacto' }
@@ -667,7 +668,7 @@ export default function AltavitaPage() {
                   </h3>
 
                   <p className="text-xs sm:text-sm text-[#F8F8F4]/80 line-clamp-2">
-                    11 especialidades médicas en Los Hibiscus 740, La Serena. Conexión directa con sistema de agenda Consultorio.me.
+                    Especialidades médicas en Los Hibiscus 740, La Serena. Conexión directa con sistema de agenda Consultorio.me.
                   </p>
 
                   <div className="pt-2">
@@ -728,7 +729,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ESPECIALIDADES */}
+        {/* ESPECIALIDADES (Renderizado inmediato a 0ms sin bloqueos) */}
         <section id="especialidades-section" className="py-16 md:py-20 bg-[#F8F8F4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-12">
@@ -739,77 +740,70 @@ export default function AltavitaPage() {
                 </span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl text-[#22311D] font-bold tracking-tight mb-3">
-                11 Especialidades Médicas e Integrativas
+                Especialidades Médicas e Integrativas
               </h2>
               <p className="text-sm sm:text-base text-[#22311D]/80">
                 Selecciona la especialidad de tu interés para reservar hora de atención en tiempo real.
               </p>
             </div>
 
-            {specialtiesLoading ? (
-              <div className="flex flex-col items-center justify-center py-12 gap-3">
-                <RefreshCw className="w-8 h-8 text-[#3B5B28] animate-spin" />
-                <p className="text-xs font-semibold text-[#3B5B28]">Cargando equipo médico en vivo desde Google Sheets...</p>
-              </div>
-            ) : (
-              <div id="specialties-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {SPECIALTIES_DATA.map((specialty, idx) => (
-                  <div
-                    key={specialty.id}
-                    id={`specialty-card-${specialty.id}`}
-                    className="group bg-white rounded-2xl p-6 border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 left-0 right-0 h-1.5" style={{ backgroundColor: specialty.areaColor }} />
+            <div id="specialties-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {SPECIALTIES_DATA.map((specialty, idx) => (
+                <div
+                  key={specialty.id}
+                  id={`specialty-card-${specialty.id}`}
+                  className="group bg-white rounded-2xl p-6 border border-[#3B5B28]/15 shadow-xs hover:shadow-xl transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 left-0 right-0 h-1.5" style={{ backgroundColor: specialty.areaColor }} />
 
-                    <div>
-                      <div className="flex items-start justify-between gap-3 mb-4">
-                        <div
-                          className="w-12 h-12 rounded-xl flex items-center justify-center shadow-xs transition-transform group-hover:scale-110"
-                          style={{ backgroundColor: `${specialty.areaColor}15`, border: `1px solid ${specialty.areaColor}30` }}
-                        >
-                          {renderSpecialtyIcon(specialty.iconName, specialty.areaColor)}
-                        </div>
-                        <span
-                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-right max-w-[130px]"
-                          style={{ backgroundColor: `${specialty.areaColor}10`, color: specialty.areaColor }}
-                        >
-                          {specialty.badgeLabel}
-                        </span>
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div
+                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-xs transition-transform group-hover:scale-110"
+                        style={{ backgroundColor: `${specialty.areaColor}15`, border: `1px solid ${specialty.areaColor}30` }}
+                      >
+                        {renderSpecialtyIcon(specialty.iconName, specialty.areaColor)}
                       </div>
-
-                      <h3 className="font-serif text-xl font-bold mb-2 tracking-tight" style={{ color: specialty.areaColor }}>
-                        {idx + 1}. {specialty.name}
-                      </h3>
-
-                      <p className="text-xs sm:text-sm text-[#22311D]/80 leading-relaxed mb-4">
-                        {specialty.shortDesc}
-                      </p>
-
-                      <div className="space-y-1.5 mb-5 pt-3 border-t border-[#3B5B28]/10">
-                        {specialty.focus.map((item, fIdx) => (
-                          <div key={fIdx} className="flex items-center gap-1.5 text-xs text-[#22311D]/75">
-                            <Check className="w-3.5 h-3.5 shrink-0" style={{ color: specialty.areaColor }} />
-                            <span>{item}</span>
-                          </div>
-                        ))}
-                      </div>
+                      <span
+                        className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md text-right max-w-[130px]"
+                        style={{ backgroundColor: `${specialty.areaColor}10`, color: specialty.areaColor }}
+                      >
+                        {specialty.badgeLabel}
+                      </span>
                     </div>
 
-                    <div className="pt-4 border-t border-[#3B5B28]/10">
-                      <button
-                        id={`btn-agendar-specialty-${specialty.id}`}
-                        onClick={() => openBookingForSpecialty(specialty.name, specialty.bookingUrl)}
-                        className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
-                        style={{ backgroundColor: specialty.areaColor }}
-                      >
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>Agendar {specialty.name}</span>
-                      </button>
+                    <h3 className="font-serif text-xl font-bold mb-2 tracking-tight" style={{ color: specialty.areaColor }}>
+                      {idx + 1}. {specialty.name}
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-[#22311D]/80 leading-relaxed mb-4">
+                      {specialty.shortDesc}
+                    </p>
+
+                    <div className="space-y-1.5 mb-5 pt-3 border-t border-[#3B5B28]/10">
+                      {specialty.focus.map((item, fIdx) => (
+                        <div key={fIdx} className="flex items-center gap-1.5 text-xs text-[#22311D]/75">
+                          <Check className="w-3.5 h-3.5 shrink-0" style={{ color: specialty.areaColor }} />
+                          <span>{item}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+
+                  <div className="pt-4 border-t border-[#3B5B28]/10">
+                    <button
+                      id={`btn-agendar-specialty-${specialty.id}`}
+                      onClick={() => openBookingForSpecialty(specialty.name, specialty.bookingUrl)}
+                      className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
+                      style={{ backgroundColor: specialty.areaColor }}
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>Agendar {specialty.name}</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -1123,7 +1117,7 @@ export default function AltavitaPage() {
                   Atención Integral y Suplementación de Alta Calidad
                 </h2>
                 <p className="text-sm sm:text-base text-[#22311D]/80 leading-relaxed">
-                  En <strong>Altavita Salud Integrativa</strong> unimos la atención médica en nuestras 11 especialidades con la suplementación natural y hongos adaptógenos de alta pureza. Estamos ubicados en Los Hibiscus 740, La Serena.
+                  En <strong>Altavita Salud Integrativa</strong> unimos la atención médica en nuestras especialidades clínicas con la suplementación natural y hongos adaptógenos de alta pureza. Estamos ubicados en Los Hibiscus 740, La Serena.
                 </p>
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <div className="bg-[#F8F8F4] p-3.5 rounded-xl border border-[#3B5B28]/15">
@@ -1421,7 +1415,7 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL QUICK VIEW (Marco de visualización estricto sin deformaciones ni recortes) */}
+      {/* MODAL QUICK VIEW */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1569,7 +1563,7 @@ export default function AltavitaPage() {
                 </div>
               </div>
               <p className="text-xs sm:text-sm text-[#F8F8F4]/80 leading-relaxed">
-                Centro médico y botica de salud integrativa en La Serena, Chile. Atención clínica en 11 especialidades y suplementación natural.
+                Centro médico y botica de salud integrativa en La Serena, Chile. Atención clínica en especialidades médicas y suplementación natural.
               </p>
               <div className="pt-2 flex items-center gap-3">
                 <a
