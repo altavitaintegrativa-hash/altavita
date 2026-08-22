@@ -162,7 +162,7 @@ export function useSpecialties(csvUrl?: string) {
             return idx !== -1 && row[idx] ? row[idx] : '';
           };
 
-          const specialty = getValue('specialty') || getValue('specialty') || getValue('name') || 'Especialidad';
+          const specialty = getValue('specialty') || getValue('speciality') || getValue('name') || 'Especialidad';
           const name = getValue('name') || getValue('profesional') || getValue('doctor') || '';
 
           if (!specialty) continue;
@@ -187,7 +187,7 @@ export function useSpecialties(csvUrl?: string) {
           setSpecialties(fetchedSpecialties);
         }
       } catch (err) {
-        // Mantiene INITIAL_SPECIALTIES silenciosamente si falla
+        // Mantiene INITIAL_SPECIALTIES si falla la red
       } finally {
         setLoading(false);
       }
