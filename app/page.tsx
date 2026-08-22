@@ -275,7 +275,6 @@ export default function AltavitaPage() {
     setActiveModalImgIndex(0);
   };
 
-  // Generador de mensaje de WhatsApp con formato limpio (sin emojis conflictivos)
   const generateWhatsAppOrderLink = () => {
     const phone = '56976766513';
     let text = `*¡Hola Altavita Salud Integrativa!* Quisiera realizar un pedido:\n\n`;
