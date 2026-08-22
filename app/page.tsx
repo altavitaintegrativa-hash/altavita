@@ -275,7 +275,6 @@ export default function AltavitaPage() {
     setActiveModalImgIndex(0);
   };
 
-  // Generador de mensaje de WhatsApp con formato limpio (sin caracteres/emojis corruptos)
   const generateWhatsAppOrderLink = () => {
     const phone = '56976766513';
     let text = `*¡Hola Altavita Salud Integrativa!* Quisiera realizar un pedido:\n\n`;
@@ -494,6 +493,7 @@ export default function AltavitaPage() {
         </AnimatePresence>
       </header>
 
+      {/* NOTIFICACIÓN CARRITO */}
       <AnimatePresence>
         {cartNotification && (
           <motion.div
@@ -511,6 +511,25 @@ export default function AltavitaPage() {
               Ver Carrito
             </button>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* BOTÓN FLOTANTE MÓVIL (CART) */}
+      <AnimatePresence>
+        {cartItemCount > 0 && (
+          <motion.button
+            initial={{ opacity: 0, y: 50, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 50, scale: 0.8 }}
+            onClick={() => setIsCartOpen(true)}
+            className="md:hidden fixed bottom-6 left-4 z-40 bg-[#3B5B28] text-white p-4 rounded-full shadow-2xl flex items-center justify-center border-2 border-[#D4AF37] hover:bg-[#22311D] transition-colors active:scale-95 cursor-pointer"
+            aria-label="Abrir carrito flotante"
+          >
+            <ShoppingBag className="w-6 h-6 text-[#D4AF37]" />
+            <span className="absolute -top-1 -right-1 bg-[#D4AF37] text-slate-950 text-[11px] font-extrabold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+              {cartItemCount}
+            </span>
+          </motion.button>
         )}
       </AnimatePresence>
 
@@ -1215,16 +1234,16 @@ export default function AltavitaPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsCartOpen(false)}
-              className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
             />
 
-            <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10 pointer-events-none">
+            <div className="fixed inset-y-0 right-0 w-full sm:w-[450px] flex pointer-events-none">
               <motion.div
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="pointer-events-auto w-full max-w-md bg-[#F8F8F4] shadow-2xl border-l border-[#3B5B28]/20 flex flex-col justify-between h-full"
+                className="pointer-events-auto w-full bg-[#F8F8F4] shadow-2xl border-l border-[#3B5B28]/20 flex flex-col justify-between h-full"
               >
                 <div className="p-5 bg-white border-b border-[#3B5B28]/15 flex items-center justify-between">
                   <div className="flex items-center gap-2">
