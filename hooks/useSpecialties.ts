@@ -157,29 +157,32 @@ export function useSpecialties(csvUrl?: string) {
           const row = parseCSVLine(lines[i]);
           if (row.length < 3) continue;
 
-          const getValue = (key: string) => {
-            const idx = headers.indexOf(key.toLowerCase());
-            return idx !== -1 && row[idx] ? row[idx] : '';
+          const getValue = (...keys: string[]) => {
+            for (const key of keys) {
+              const idx = headers.indexOf(key.toLowerCase());
+              if (idx !== -1 && row[idx]) return row[idx];
+            }
+            return '';
           };
 
-          const specialty = getValue('specialty') || getValue('speciality') || getValue('name') || 'Especialidad';
-          const name = getValue('name') || getValue('profesional') || getValue('doctor') || '';
+          const specialty = getValue('nombre', 'specialty', 'speciality') || 'Especialidad';
+          const name = getValue('categoría', 'categoria', 'name', 'profesional') || '';
 
           if (!specialty) continue;
 
-          const focusRaw = getValue('focus');
+          const focusRaw = getValue('puntos clave (separados por ";")', 'puntos clave', 'focus');
           const focusList = focusRaw ? focusRaw.split(';').map((f) => f.trim()).filter(Boolean) : [];
 
           fetchedSpecialties.push({
             id: getValue('id') || `spec-${i}`,
             specialty,
             name,
-            areaColor: getValue('areacolor') || '#3B5B28',
-            badgeLabel: getValue('badgelabel') || 'Atención Clínica',
-            iconName: getValue('iconname') || 'Activity',
-            shortDesc: getValue('shortdesc') || 'Atención integral y personalizada para mejorar tu bienestar.',
+            areaColor: getValue('color', 'areacolor') || '#3B5B28',
+            badgeLabel: getValue('etiqueta', 'badgelabel') || 'Atención Clínica',
+            iconName: getValue('ícono', 'icono', 'iconname') || 'Activity',
+            shortDesc: getValue('descripción breve', 'descripcion breve', 'shortdesc') || 'Atención integral y personalizada para mejorar tu bienestar.',
             focus: focusList.length > 0 ? focusList : ['Atención profesional', 'Evaluación clínica'],
-            bookingUrl: getValue('bookingurl') || DEFAULT_BOOKING_URL
+            bookingUrl: getValue('link reserva consultorio.me', 'link reserva', 'bookingurl') || DEFAULT_BOOKING_URL
           });
         }
 
