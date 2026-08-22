@@ -41,11 +41,20 @@ import {
   Info
 } from 'lucide-react';
 import { useProducts, Product } from '@/hooks/useProducts';
-import { useSpecialties } from '@/hooks/useSpecialties';
+import { useSpecialties, Specialty } from '@/hooks/useSpecialties';
 
 const PUBLISHED_PRODUCTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv&gid=0';
 const PUBLISHED_SPECIALTIES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtWN_WHgGLgiuDzvGgFr1QiC4Og4MrJDOhaS6VpOKuOkF6B7SxJ9U_7FplBtdvA-iiqJeW8hjprvbj/pub?output=csv&gid=1840435494';
 const DEFAULT_BOOKING_URL = 'https://consultorio.me/pre/selectexternal/417602?external=true';
+
+const getSanitizedBookingUrl = (url?: string) => {
+  if (!url) return DEFAULT_BOOKING_URL;
+  let cleanUrl = url.trim();
+  if (!cleanUrl.includes('external=true')) {
+    cleanUrl += cleanUrl.includes('?') ? '&external=true' : '?external=true';
+  }
+  return cleanUrl;
+};
 
 interface HeroSlide {
   id: string;
@@ -156,9 +165,21 @@ export default function AltavitaPage() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [activeModalImgIndex, setActiveModalImgIndex] = useState<number>(0);
 
+  // Estados de Agendamiento
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Medicina General');
   const [selectedSpecialtyBookingUrl, setSelectedSpecialtyBookingUrl] = useState<string>(DEFAULT_BOOKING_URL);
+
+  // Estado Modal Multi-Especialistas
+  const [multiSpecialistModal, setMultiSpecialistModal] = useState<{
+    isOpen: boolean;
+    speciality: string;
+    specialists: { name: string; url: string }[];
+  }>({
+    isOpen: false,
+    speciality: '',
+    specialists: []
+  });
 
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<'form' | 'success'>('form');
@@ -225,10 +246,32 @@ export default function AltavitaPage() {
     });
   }, [PRODUCTS_DATABASE, selectedCategory, searchQuery]);
 
-  const openBookingForSpecialty = (specialtyName: string, bookingUrl?: string) => {
-    setSelectedSpecialtyForBooking(specialtyName);
-    setSelectedSpecialtyBookingUrl(bookingUrl || DEFAULT_BOOKING_URL);
+  const openBookingForSpecialty = (title: string, bookingUrl?: string) => {
+    setSelectedSpecialtyForBooking(title);
+    setSelectedSpecialtyBookingUrl(getSanitizedBookingUrl(bookingUrl));
     setIsBookingModalOpen(true);
+  };
+
+  const handleSpecialtyBookingClick = (specialty: Specialty) => {
+    const names = (specialty.name || '').split(';').map((s) => s.trim()).filter(Boolean);
+    const urls = (specialty.bookingUrl || '').split(';').map((s) => s.trim()).filter(Boolean);
+
+    if (names.length > 1 && urls.length > 1) {
+      const list = names.map((n, i) => ({
+        name: n,
+        url: urls[i] || urls[0] || DEFAULT_BOOKING_URL
+      }));
+      setMultiSpecialistModal({
+        isOpen: true,
+        speciality: specialty.speciality,
+        specialists: list
+      });
+    } else {
+      openBookingForSpecialty(
+        specialty.speciality,
+        specialty.bookingUrl || DEFAULT_BOOKING_URL
+      );
+    }
   };
 
   const openQuickView = (product: Product) => {
@@ -729,7 +772,7 @@ export default function AltavitaPage() {
           </div>
         </section>
 
-        {/* ESPECIALIDADES (Renderizado inmediato a 0ms sin bloqueos) */}
+        {/* ESPECIALIDADES */}
         <section id="especialidades-section" className="py-16 md:py-20 bg-[#F8F8F4]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-12">
@@ -748,7 +791,7 @@ export default function AltavitaPage() {
             </div>
 
             <div id="specialties-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {SPECIALTIES_DATA.map((specialty, idx) => (
+              {SPECIALTIES_DATA.map((specialty) => (
                 <div
                   key={specialty.id}
                   id={`specialty-card-${specialty.id}`}
@@ -772,9 +815,18 @@ export default function AltavitaPage() {
                       </span>
                     </div>
 
-                    <h3 className="font-serif text-xl font-bold mb-2 tracking-tight" style={{ color: specialty.areaColor }}>
-                      {idx + 1}. {specialty.name}
+                    {/* Título Grande con Especialidad (Sin Números) */}
+                    <h3 className="font-serif text-xl font-bold mb-1 tracking-tight" style={{ color: specialty.areaColor }}>
+                      {specialty.speciality}
                     </h3>
+
+                    {/* Subtítulo con Nombre del Profesional */}
+                    {specialty.name && (
+                      <p className="text-xs font-bold text-[#5B8246] tracking-wide mb-3 flex items-center gap-1">
+                        <span>•</span>
+                        <span>{specialty.name.replace(/;/g, ' / ')}</span>
+                      </p>
+                    )}
 
                     <p className="text-xs sm:text-sm text-[#22311D]/80 leading-relaxed mb-4">
                       {specialty.shortDesc}
@@ -793,12 +845,12 @@ export default function AltavitaPage() {
                   <div className="pt-4 border-t border-[#3B5B28]/10">
                     <button
                       id={`btn-agendar-specialty-${specialty.id}`}
-                      onClick={() => openBookingForSpecialty(specialty.name, specialty.bookingUrl)}
+                      onClick={() => handleSpecialtyBookingClick(specialty)}
                       className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
                       style={{ backgroundColor: specialty.areaColor }}
                     >
                       <Calendar className="w-3.5 h-3.5" />
-                      <span>Agendar {specialty.name}</span>
+                      <span>Agendar {specialty.speciality}</span>
                     </button>
                   </div>
                 </div>
@@ -864,14 +916,14 @@ export default function AltavitaPage() {
                       onChange={(e) => {
                         const selectedName = e.target.value;
                         setSelectedSpecialtyForBooking(selectedName);
-                        const sp = SPECIALTIES_DATA.find((s) => s.name === selectedName);
+                        const sp = SPECIALTIES_DATA.find((s) => s.speciality === selectedName);
                         setSelectedSpecialtyBookingUrl(sp?.bookingUrl || DEFAULT_BOOKING_URL);
                       }}
                       className="w-full bg-[#F8F8F4] border border-[#3B5B28]/20 rounded-lg p-2.5 text-xs font-bold text-[#22311D] focus:ring-2 focus:ring-[#3B5B28]"
                     >
                       {SPECIALTIES_DATA.map((sp) => (
-                        <option key={sp.id} value={sp.name}>
-                          {sp.name}
+                        <option key={sp.id} value={sp.speciality}>
+                          {sp.speciality} {sp.name && sp.name !== 'Elige tu Especialista' ? `(${sp.name.replace(/;/g, ', ')})` : ''}
                         </option>
                       ))}
                     </select>
@@ -1312,7 +1364,61 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CONSULTORIO.ME */}
+      {/* MODAL MULTI-ESPECIALISTA */}
+      <AnimatePresence>
+        {multiSpecialistModal.isOpen && (
+          <div id="multi-specialist-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false })} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl z-10 space-y-5"
+            >
+              <div className="flex items-center justify-between border-b pb-3">
+                <div>
+                  <span className="text-[10px] font-bold text-[#5B8246] uppercase tracking-wider">Especialidad</span>
+                  <h3 className="font-serif font-bold text-xl text-[#22311D]">{multiSpecialistModal.speciality}</h3>
+                </div>
+                <button onClick={() => setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false })} className="text-stone-400 hover:text-stone-700 p-1">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <p className="text-xs text-[#22311D]/80 leading-relaxed font-medium">
+                Selecciona el profesional con quien deseas agendar tu consulta médica:
+              </p>
+
+              <div className="space-y-3 pt-1">
+                {multiSpecialistModal.specialists.map((spec, sIdx) => (
+                  <button
+                    key={sIdx}
+                    onClick={() => {
+                      setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false });
+                      openBookingForSpecialty(
+                        `${multiSpecialistModal.speciality} (${spec.name})`,
+                        spec.url
+                      );
+                    }}
+                    className="w-full bg-[#F8F8F4] hover:bg-[#3B5B28] text-[#22311D] hover:text-white p-4 rounded-2xl border border-[#3B5B28]/20 transition-all flex items-center justify-between group shadow-xs active:scale-98"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-[#3B5B28]/10 group-hover:bg-white/20 flex items-center justify-center font-black text-xs text-[#3B5B28] group-hover:text-white shrink-0">
+                        {spec.name.charAt(0)}
+                      </div>
+                      <span className="font-extrabold text-xs sm:text-sm text-left">{spec.name}</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 opacity-60 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* MODAL CONSULTORIO.ME (Altura Incrementada) */}
       <AnimatePresence>
         {isBookingModalOpen && (
           <div id="booking-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
@@ -1322,7 +1428,7 @@ export default function AltavitaPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative bg-white rounded-3xl max-w-3xl w-full shadow-2xl border border-[#3B5B28]/20 z-10 overflow-hidden"
+              className="relative bg-white rounded-3xl max-w-4xl w-full shadow-2xl border border-[#3B5B28]/20 z-10 overflow-hidden my-6"
             >
               <div className="bg-[#3B5B28] text-white p-4 px-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -1334,9 +1440,9 @@ export default function AltavitaPage() {
                 </button>
               </div>
 
-              <div className="p-2 sm:p-4 bg-[#F8F8F4] h-[500px]">
+              <div className="p-2 sm:p-4 bg-[#F8F8F4] h-[80vh] min-h-[620px] max-h-[820px]">
                 <iframe
-                  src={selectedSpecialtyBookingUrl || DEFAULT_BOOKING_URL}
+                  src={selectedSpecialtyBookingUrl}
                   title="Agendamiento Altavita Consultorio.me"
                   className="w-full h-full border-0 rounded-2xl"
                   allow="payment"
@@ -1604,8 +1710,8 @@ export default function AltavitaPage() {
               <ul className="space-y-1.5 text-xs text-[#F8F8F4]/80">
                 {SPECIALTIES_DATA.slice(0, 6).map((sp) => (
                   <li key={sp.id}>
-                    <button onClick={() => openBookingForSpecialty(sp.name, sp.bookingUrl)} className="hover:text-[#D4AF37] transition-colors text-left">
-                      • {sp.name}
+                    <button onClick={() => handleSpecialtyBookingClick(sp)} className="hover:text-[#D4AF37] transition-colors text-left">
+                      • {sp.speciality}
                     </button>
                   </li>
                 ))}
