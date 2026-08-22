@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 export interface Product {
   id: string;
   name: string;
-  category: 'Hongos Adaptógenos' | 'Vitaminas & Minerales' | 'Salud Digestiva';
+  category: 'Hongos Adaptógenos' | 'Vitaminas & Minerales' | 'Salud Digestiva' | string;
   tagline: string;
   description: string;
   benefits: string[];
@@ -113,27 +113,35 @@ export function useProducts(csvUrlOrSheetId?: string) {
           const row = parseCSVLine(lines[i]);
           if (row.length < 3) continue;
 
-          const getValue = (key: string) => {
-            const idx = headers.indexOf(key.toLowerCase());
-            return idx !== -1 && row[idx] ? row[idx] : '';
+          const getValue = (...keys: string[]) => {
+            for (const key of keys) {
+              const idx = headers.indexOf(key.toLowerCase());
+              if (idx !== -1 && row[idx]) return row[idx];
+            }
+            return '';
           };
 
-          const name = getValue('name');
+          const name = getValue('nombre', 'name');
           if (!name) continue;
 
-          const catRaw = getValue('category');
-          let category: Product['category'] = 'Hongos Adaptógenos';
+          const catRaw = getValue('categoría', 'categoria', 'category');
+          let category = catRaw || 'Hongos Adaptógenos';
           if (catRaw.includes('Vit') || catRaw.includes('Min')) category = 'Vitaminas & Minerales';
           else if (catRaw.includes('Dig') || catRaw.includes('Salud')) category = 'Salud Digestiva';
 
-          const benefitsRaw = getValue('benefits');
+          const benefitsRaw = getValue('beneficios', 'benefits');
           const benefits = benefitsRaw ? benefitsRaw.split(';').map((b) => b.trim()) : ['100% Natural'];
 
-          const img1 = getValue('imageurl') || getValue('image') || getValue('imagen') || getValue('imageurl1') || '';
-          const img2 = getValue('imageurl2') || getValue('image2') || getValue('imagen2') || '';
-          const img3 = getValue('imageurl3') || getValue('image3') || getValue('imagen3') || '';
-          const img4 = getValue('imageurl4') || getValue('image4') || getValue('imagen4') || '';
-          const img5 = getValue('imageurl5') || getValue('image5') || getValue('imagen5') || '';
+          const normalPriceStr = getValue('precio normal', 'precionormal', 'normalprice').replace(/\D/g, '');
+          const salePriceStr = getValue('precio oferta', 'preciooferta', 'saleprice').replace(/\D/g, '');
+          const normalPrice = parseInt(normalPriceStr, 10) || 0;
+          const salePrice = parseInt(salePriceStr, 10) || normalPrice;
+
+          const img1 = getValue('imagen 1', 'imagen1', 'imageurl', 'image') || '';
+          const img2 = getValue('imagen 2', 'imagen2', 'imageurl2') || '';
+          const img3 = getValue('imagen 3', 'imagen3', 'imageurl3') || '';
+          const img4 = getValue('imagen 4', 'imagen4', 'imageurl4') || '';
+          const img5 = getValue('imagen 5', 'imagen5', 'imageurl5') || '';
 
           const allImages = [img1, img2, img3, img4, img5].filter((u) => u && u.length > 5);
 
@@ -141,15 +149,15 @@ export function useProducts(csvUrlOrSheetId?: string) {
             id: getValue('id') || `sheet-prod-${i}`,
             name,
             category,
-            tagline: getValue('tagline') || 'Suplemento Terapéutico',
-            description: getValue('description') || name,
+            tagline: getValue('lema', 'tagline') || 'Suplemento Terapéutico',
+            description: getValue('descripción', 'descripcion', 'description') || name,
             benefits,
-            normalPrice: parseInt(getValue('normalprice').replace(/\D/g, ''), 10) || 0,
-            salePrice: parseInt(getValue('saleprice').replace(/\D/g, ''), 10) || 0,
+            normalPrice,
+            salePrice,
             rating: 5.0,
             reviewsCount: 25 + i * 2,
-            format: getValue('format') || 'Frasco',
-            badge: getValue('badge') || undefined,
+            format: getValue('formato', 'format') || 'Unidad',
+            badge: getValue('etiqueta', 'insignia', 'badge') || undefined,
             imageUrl: allImages[0] || undefined,
             images: allImages,
             colorScheme: {
