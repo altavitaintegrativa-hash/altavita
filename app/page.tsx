@@ -275,6 +275,7 @@ export default function AltavitaPage() {
     setActiveModalImgIndex(0);
   };
 
+  // Generador de mensaje de WhatsApp con formato limpio (sin caracteres/emojis corruptos)
   const generateWhatsAppOrderLink = () => {
     const phone = '56976766513';
     let text = `*¡Hola Altavita Salud Integrativa!* Quisiera realizar un pedido:\n\n`;
@@ -305,21 +306,23 @@ export default function AltavitaPage() {
   };
 
   return (
-    <div id="altavita-app-root" className="min-h-screen bg-[#F8F8F4] text-[#22311D] flex flex-col antialiased font-sans">
+    <div id="altavita-app-root" className="min-h-screen bg-[#F8F8F4] text-[#22311D] flex flex-col antialiased font-sans overflow-x-hidden">
       
       {/* TOP ANNOUNCEMENT BAR */}
-      <div id="top-announcement-bar" className="bg-[#3B5B28] text-[#F8F8F4] text-xs py-2 px-4 border-b border-[#22311D]/20">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" /> Los Hibiscus 740, La Serena
+      <div id="top-announcement-bar" className="bg-[#3B5B28] text-[#F8F8F4] text-[11px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-4 border-b border-[#22311D]/20">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-3 sm:gap-4 font-medium text-center sm:text-left">
+            <span className="flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+              <span>Los Hibiscus 740, La Serena</span>
             </span>
             <span className="hidden md:flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#D4AF37]" /> Lun a Vie 08:30 - 20:00 | Sáb 09:00 - 14:00
+              <Clock className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+              <span>Lun a Vie 08:30 - 20:00 | Sáb 09:00 - 14:00</span>
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-3 sm:gap-4">
             <a
               id="top-whatsapp-link"
               href="https://wa.me/56976766513"
@@ -327,7 +330,8 @@ export default function AltavitaPage() {
               rel="noopener noreferrer"
               className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors font-semibold cursor-pointer"
             >
-              <Phone className="w-3.5 h-3.5 text-[#D4AF37]" /> +56 9 7676 6513
+              <Phone className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+              <span>+56 9 7676 6513</span>
             </a>
             
             <div className="flex items-center gap-2.5 pl-2 border-l border-white/20">
@@ -818,7 +822,7 @@ export default function AltavitaPage() {
                     {specialty.name && (
                       <p className="text-xs font-bold text-[#5B8246] tracking-wide mb-3 flex items-center gap-1">
                         <span>•</span>
-                        <span>{specialty.name.replace(/;/g, ' / ')}</span>
+                        <strong>{specialty.name.replace(/;/g, ' / ')}</strong>
                       </p>
                     )}
 
@@ -1211,16 +1215,16 @@ export default function AltavitaPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsCartOpen(false)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
+              className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
             />
 
-            <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10 pointer-events-none">
               <motion.div
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="w-screen max-w-md bg-[#F8F8F4] shadow-2xl border-l border-[#3B5B28]/20 flex flex-col justify-between"
+                className="pointer-events-auto w-full max-w-md bg-[#F8F8F4] shadow-2xl border-l border-[#3B5B28]/20 flex flex-col justify-between h-full"
               >
                 <div className="p-5 bg-white border-b border-[#3B5B28]/15 flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -1441,7 +1445,7 @@ export default function AltavitaPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setQuickViewProduct(null)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer" />
             
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl z-10 space-y-6">
-              
+
               <div className="flex items-start justify-between border-b pb-3">
                 <div>
                   <span className="text-[10px] font-bold text-[#5B8246] uppercase tracking-wider">{quickViewProduct.category}</span>
