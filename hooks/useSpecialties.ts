@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 export interface Specialty {
   id: string;
-  speciality: string;
+  specialty: string;
   name: string;
   areaColor: string;
   badgeLabel: string;
@@ -19,7 +19,7 @@ const DEFAULT_BOOKING_URL = 'https://consultorio.me/pre/selectexternal/417602?ex
 export const INITIAL_SPECIALTIES: Specialty[] = [
   {
     id: 'medicina-general',
-    speciality: 'Agenda Altavita',
+    specialty: 'Centro Altavita',
     name: 'Elige tu Especialista',
     areaColor: '#3B5B28',
     badgeLabel: 'Salud Primaria & Preventiva',
@@ -30,7 +30,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'pediatria',
-    speciality: 'Pediatría',
+    specialty: 'Pediatría',
     name: 'Dra. Annia Díaz',
     areaColor: '#C53030',
     badgeLabel: 'Salud Infanto-Juvenil',
@@ -41,7 +41,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'masoterapia',
-    speciality: 'Masoterapia',
+    specialty: 'Masoterapia',
     name: 'Angélica Zavala',
     areaColor: '#D53F8C',
     badgeLabel: 'Bienestar & Terapia Corporal',
@@ -52,7 +52,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'fonoaudiologia',
-    speciality: 'Fonoaudiología',
+    specialty: 'Fonoaudiología',
     name: 'Eugenio Opazo',
     areaColor: '#D69E2E',
     badgeLabel: 'Comunicación & Lenguaje',
@@ -63,7 +63,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'kinesiologia',
-    speciality: 'Kinesiología',
+    specialty: 'Kinesiología',
     name: 'Joseffa Molgas',
     areaColor: '#319795',
     badgeLabel: 'Rehabilitación & Movimiento',
@@ -74,7 +74,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'psicologia',
-    speciality: 'Psicología',
+    specialty: 'Psicología',
     name: 'Karina Kam',
     areaColor: '#3182CE',
     badgeLabel: 'Salud Mental & Bienestar',
@@ -85,7 +85,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'podologia',
-    speciality: 'Podología',
+    specialty: 'Podología',
     name: 'Miriam Madrid',
     areaColor: '#2B6CB0',
     badgeLabel: 'Cuidado & Salud del Pie',
@@ -96,7 +96,7 @@ export const INITIAL_SPECIALTIES: Specialty[] = [
   },
   {
     id: 'medicina-complementaria',
-    speciality: 'Terapia Integral',
+    specialty: 'Terapia Integral',
     name: 'Paola Zavala',
     areaColor: '#5B8246',
     badgeLabel: 'Enfoque Holístico & Bienestar',
@@ -162,17 +162,17 @@ export function useSpecialties(csvUrl?: string) {
             return idx !== -1 && row[idx] ? row[idx] : '';
           };
 
-          const speciality = getValue('speciality') || getValue('specialty') || getValue('name') || 'Especialidad';
+          const specialty = getValue('specialty') || getValue('specialty') || getValue('name') || 'Especialidad';
           const name = getValue('name') || getValue('profesional') || getValue('doctor') || '';
 
-          if (!speciality) continue;
+          if (!specialty) continue;
 
           const focusRaw = getValue('focus');
           const focusList = focusRaw ? focusRaw.split(';').map((f) => f.trim()).filter(Boolean) : [];
 
           fetchedSpecialties.push({
             id: getValue('id') || `spec-${i}`,
-            speciality,
+            specialty,
             name,
             areaColor: getValue('areacolor') || '#3B5B28',
             badgeLabel: getValue('badgelabel') || 'Atención Clínica',
@@ -187,7 +187,7 @@ export function useSpecialties(csvUrl?: string) {
           setSpecialties(fetchedSpecialties);
         }
       } catch (err) {
-        // En caso de fallo o timeout, mantiene silenciosamente INITIAL_SPECIALTIES
+        // Mantiene INITIAL_SPECIALTIES silenciosamente si falla
       } finally {
         setLoading(false);
       }
