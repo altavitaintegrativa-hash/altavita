@@ -35,7 +35,6 @@ import {
   Menu,
   Star,
   Check,
-  CreditCard,
   Building2,
   RefreshCw,
   Info
@@ -167,23 +166,19 @@ export default function AltavitaPage() {
 
   // Estados de Agendamiento
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Medicina General');
+  const [selectedSpecialtyForBooking, setSelectedSpecialtyForBooking] = useState<string>('Centro Altavita');
   const [selectedSpecialtyBookingUrl, setSelectedSpecialtyBookingUrl] = useState<string>(DEFAULT_BOOKING_URL);
 
   // Estado Modal Multi-Especialistas
   const [multiSpecialistModal, setMultiSpecialistModal] = useState<{
     isOpen: boolean;
-    speciality: string;
+    specialty: string;
     specialists: { name: string; url: string }[];
   }>({
     isOpen: false,
-    speciality: '',
+    specialty: '',
     specialists: []
   });
-
-  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState<'form' | 'success'>('form');
-  const [customerData, setCustomerData] = useState({ name: '', rut: '', phone: '', email: '', address: '', city: 'La Serena' });
 
   const formatCLP = (amount: number) => {
     return new Intl.NumberFormat('es-CL', {
@@ -247,7 +242,8 @@ export default function AltavitaPage() {
   }, [PRODUCTS_DATABASE, selectedCategory, searchQuery]);
 
   const openBookingForSpecialty = (title: string, bookingUrl?: string) => {
-    setSelectedSpecialtyForBooking(title);
+    const cleanTitle = title === 'Medicina General' || title === 'Agenda Altavita' ? 'Centro Altavita' : title;
+    setSelectedSpecialtyForBooking(cleanTitle);
     setSelectedSpecialtyBookingUrl(getSanitizedBookingUrl(bookingUrl));
     setIsBookingModalOpen(true);
   };
@@ -263,12 +259,12 @@ export default function AltavitaPage() {
       }));
       setMultiSpecialistModal({
         isOpen: true,
-        speciality: specialty.speciality,
+        specialty: specialty.specialty,
         specialists: list
       });
     } else {
       openBookingForSpecialty(
-        specialty.speciality,
+        specialty.specialty,
         specialty.bookingUrl || DEFAULT_BOOKING_URL
       );
     }
@@ -279,14 +275,15 @@ export default function AltavitaPage() {
     setActiveModalImgIndex(0);
   };
 
+  // Generador de mensaje de WhatsApp con formato limpio (sin emojis conflictivos)
   const generateWhatsAppOrderLink = () => {
     const phone = '56976766513';
-    let text = `🌿 *¡Hola Altavita Salud Integrativa!* Quisiera realizar un pedido:\n\n`;
+    let text = `*¡Hola Altavita Salud Integrativa!* Quisiera realizar un pedido:\n\n`;
     cart.forEach((item, index) => {
       text += `${index + 1}. *${item.product.name}* x ${item.quantity} = ${formatCLP(item.product.salePrice * item.quantity)}\n`;
     });
-    text += `\n📦 *Entrega:* ${shippingOption === 'pickup' ? 'Retiro en Los Hibiscus 740' : shippingOption === 'local' ? 'Despacho La Serena / Coquimbo' : 'Envío a Regiones'}`;
-    text += `\n💰 *Total:* ${formatCLP(cartTotal)}`;
+    text += `\n*Entrega:* ${shippingOption === 'pickup' ? 'Retiro en Los Hibiscus 740' : shippingOption === 'local' ? 'Despacho La Serena / Coquimbo' : 'Envío a Regiones'}`;
+    text += `\n*Total:* ${formatCLP(cartTotal)}`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   };
 
@@ -329,7 +326,7 @@ export default function AltavitaPage() {
               href="https://wa.me/56976766513"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors font-semibold"
+              className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors font-semibold cursor-pointer"
             >
               <Phone className="w-3.5 h-3.5 text-[#D4AF37]" /> +56 9 7676 6513
             </a>
@@ -340,7 +337,7 @@ export default function AltavitaPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram Altavita"
-                className="hover:text-[#D4AF37] transition-colors"
+                className="hover:text-[#D4AF37] transition-colors cursor-pointer"
               >
                 <Instagram className="w-3.5 h-3.5" />
               </a>
@@ -349,7 +346,7 @@ export default function AltavitaPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook Altavita"
-                className="hover:text-[#D4AF37] transition-colors"
+                className="hover:text-[#D4AF37] transition-colors cursor-pointer"
               >
                 <Facebook className="w-3.5 h-3.5" />
               </a>
@@ -407,7 +404,7 @@ export default function AltavitaPage() {
                   const el = document.getElementById(tab.id === 'inicio' ? 'hero-slider-section' : `${tab.id}-section`);
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className={`px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${
+                className={`px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 cursor-pointer ${
                   activeTab === tab.id
                     ? 'text-[#3B5B28] bg-[#5B8246]/15 font-bold shadow-xs'
                     : 'text-[#22311D]/80 hover:text-[#3B5B28] hover:bg-[#5B8246]/10'
@@ -421,8 +418,8 @@ export default function AltavitaPage() {
           <div className="flex items-center gap-2.5 sm:gap-3.5">
             <button
               id="header-cta-agendar"
-              onClick={() => openBookingForSpecialty('Medicina General')}
-              className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#c5a028] active:scale-95 text-slate-950 font-bold px-3.5 sm:px-5 py-2.5 rounded-xl shadow-md transition-all duration-150 text-xs sm:text-sm border border-[#b89528]"
+              onClick={() => openBookingForSpecialty('Centro Altavita')}
+              className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#c5a028] active:scale-95 text-slate-950 font-bold px-3.5 sm:px-5 py-2.5 rounded-xl shadow-md transition-all duration-150 text-xs sm:text-sm border border-[#b89528] cursor-pointer"
             >
               <Calendar className="w-4 h-4 text-slate-950" />
               <span className="hidden xs:inline">Agendar Hora</span>
@@ -433,7 +430,7 @@ export default function AltavitaPage() {
               id="header-cart-toggle-btn"
               onClick={() => setIsCartOpen(true)}
               aria-label="Abrir Carrito"
-              className="relative p-2.5 rounded-xl bg-white hover:bg-[#5B8246]/10 border border-[#3B5B28]/20 text-[#3B5B28] transition-all shadow-xs group"
+              className="relative p-2.5 rounded-xl bg-white hover:bg-[#5B8246]/10 border border-[#3B5B28]/20 text-[#3B5B28] transition-all shadow-xs group cursor-pointer"
             >
               <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {cartItemCount > 0 && (
@@ -449,7 +446,7 @@ export default function AltavitaPage() {
             <button
               id="mobile-menu-toggle-btn"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl text-[#3B5B28] hover:bg-[#5B8246]/10 border border-[#3B5B28]/20"
+              className="md:hidden p-2 rounded-xl text-[#3B5B28] hover:bg-[#5B8246]/10 border border-[#3B5B28]/20 cursor-pointer"
               aria-label="Menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -481,7 +478,7 @@ export default function AltavitaPage() {
                     const el = document.getElementById(item.id === 'inicio' ? 'hero-slider-section' : `${item.id}-section`);
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-between ${
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold flex items-center justify-between cursor-pointer ${
                     activeTab === item.id ? 'bg-[#3B5B28] text-white' : 'text-[#22311D] hover:bg-[#5B8246]/10'
                   }`}
                 >
@@ -506,7 +503,7 @@ export default function AltavitaPage() {
             <p className="text-xs sm:text-sm font-medium">{cartNotification}</p>
             <button
               onClick={() => setIsCartOpen(true)}
-              className="ml-auto underline text-xs font-bold text-[#D4AF37] hover:text-white"
+              className="ml-auto underline text-xs font-bold text-[#D4AF37] hover:text-white cursor-pointer"
             >
               Ver Carrito
             </button>
@@ -584,8 +581,8 @@ export default function AltavitaPage() {
                         {slide.ctaVariant === 'gold' ? (
                           <button
                             id="hero-slide-gold-cta"
-                            onClick={() => openBookingForSpecialty('Medicina General')}
-                            className="flex items-center justify-center gap-2.5 bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-bold px-7 py-4 rounded-xl shadow-xl transition-all duration-200 text-sm sm:text-base border border-[#b89528] active:scale-98"
+                            onClick={() => openBookingForSpecialty('Centro Altavita')}
+                            className="flex items-center justify-center gap-2.5 bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-bold px-7 py-4 rounded-xl shadow-xl transition-all duration-200 text-sm sm:text-base border border-[#b89528] active:scale-98 cursor-pointer"
                           >
                             <Calendar className="w-5 h-5 text-slate-950" />
                             <span>{slide.ctaText}</span>
@@ -597,7 +594,7 @@ export default function AltavitaPage() {
                               setActiveTab('tienda');
                               document.getElementById('tienda-section')?.scrollIntoView({ behavior: 'smooth' });
                             }}
-                            className="flex items-center justify-center gap-2.5 bg-[#5B8246] hover:bg-[#4d703a] text-white font-bold px-7 py-4 rounded-xl shadow-xl transition-all duration-200 text-sm sm:text-base border border-emerald-400/30 active:scale-98"
+                            className="flex items-center justify-center gap-2.5 bg-[#5B8246] hover:bg-[#4d703a] text-white font-bold px-7 py-4 rounded-xl shadow-xl transition-all duration-200 text-sm sm:text-base border border-emerald-400/30 active:scale-98 cursor-pointer"
                           >
                             <ShoppingBag className="w-5 h-5 text-white" />
                             <span>{slide.ctaText}</span>
@@ -611,7 +608,7 @@ export default function AltavitaPage() {
                               setActiveTab('especialidades');
                               document.getElementById('especialidades-section')?.scrollIntoView({ behavior: 'smooth' });
                             }}
-                            className="flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md font-semibold px-6 py-4 rounded-xl border border-white/25 transition-all text-sm sm:text-base"
+                            className="flex items-center justify-center gap-2 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md font-semibold px-6 py-4 rounded-xl border border-white/25 transition-all text-sm sm:text-base cursor-pointer"
                           >
                             <span>{slide.secondaryText}</span>
                             <ChevronRight className="w-4 h-4" />
@@ -622,7 +619,7 @@ export default function AltavitaPage() {
                             href="https://wa.me/56976766513?text=Hola%20Altavita,%20quisiera%20consultar%20por%20suplementos%20y%20adaptógenos."
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 text-white backdrop-blur-md font-semibold px-6 py-4 rounded-xl border border-[#25D366]/40 transition-all text-sm sm:text-base"
+                            className="flex items-center justify-center gap-2 bg-[#25D366]/20 hover:bg-[#25D366]/30 text-white backdrop-blur-md font-semibold px-6 py-4 rounded-xl border border-[#25D366]/40 transition-all text-sm sm:text-base cursor-pointer"
                           >
                             <Phone className="w-4 h-4 text-[#25D366]" />
                             <span>{slide.secondaryText}</span>
@@ -650,7 +647,7 @@ export default function AltavitaPage() {
             id="hero-slider-prev-btn"
             onClick={prevSlide}
             aria-label="Anterior"
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-[#D4AF37] text-white hover:text-slate-950 backdrop-blur-md flex items-center justify-center transition-all border border-white/20 shadow-lg group"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-[#D4AF37] text-white hover:text-slate-950 backdrop-blur-md flex items-center justify-center transition-all border border-white/20 shadow-lg group cursor-pointer"
           >
             <ChevronLeft className="w-6 h-6 transition-transform group-hover:-translate-x-0.5" />
           </button>
@@ -659,7 +656,7 @@ export default function AltavitaPage() {
             id="hero-slider-next-btn"
             onClick={nextSlide}
             aria-label="Siguiente"
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-[#D4AF37] text-white hover:text-slate-950 backdrop-blur-md flex items-center justify-center transition-all border border-white/20 shadow-lg group"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-black/40 hover:bg-[#D4AF37] text-white hover:text-slate-950 backdrop-blur-md flex items-center justify-center transition-all border border-white/20 shadow-lg group cursor-pointer"
           >
             <ChevronRight className="w-6 h-6 transition-transform group-hover:translate-x-0.5" />
           </button>
@@ -671,7 +668,7 @@ export default function AltavitaPage() {
                 id={`hero-dot-indicator-${i}`}
                 onClick={() => setCurrentSlide(i)}
                 aria-label={`Diapositiva ${i + 1}`}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
                   currentSlide === i ? 'w-8 bg-[#D4AF37] shadow-md' : 'w-2.5 bg-white/40 hover:bg-white/70'
                 }`}
               />
@@ -717,7 +714,7 @@ export default function AltavitaPage() {
                   <div className="pt-2">
                     <span
                       id="btn-card-especialidades"
-                      className="inline-flex items-center gap-2 bg-[#D4AF37] text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md group-hover:bg-white transition-colors"
+                      className="inline-flex items-center gap-2 bg-[#D4AF37] text-slate-950 font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md group-hover:bg-white transition-colors cursor-pointer"
                     >
                       <span>Ver Especialidades y Agenda</span>
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -759,7 +756,7 @@ export default function AltavitaPage() {
                   <div className="pt-2">
                     <span
                       id="btn-card-tienda"
-                      className="inline-flex items-center gap-2 bg-[#5B8246] text-white font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md group-hover:bg-[#D4AF37] group-hover:text-slate-950 transition-colors"
+                      className="inline-flex items-center gap-2 bg-[#5B8246] text-white font-extrabold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow-md group-hover:bg-[#D4AF37] group-hover:text-slate-950 transition-colors cursor-pointer"
                     >
                       <span>Comprar Suplementos</span>
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -815,12 +812,10 @@ export default function AltavitaPage() {
                       </span>
                     </div>
 
-                    {/* Título Grande con Especialidad (Sin Números) */}
                     <h3 className="font-serif text-xl font-bold mb-1 tracking-tight" style={{ color: specialty.areaColor }}>
-                      {specialty.speciality}
+                      {specialty.specialty}
                     </h3>
 
-                    {/* Subtítulo con Nombre del Profesional */}
                     {specialty.name && (
                       <p className="text-xs font-bold text-[#5B8246] tracking-wide mb-3 flex items-center gap-1">
                         <span>•</span>
@@ -846,11 +841,11 @@ export default function AltavitaPage() {
                     <button
                       id={`btn-agendar-specialty-${specialty.id}`}
                       onClick={() => handleSpecialtyBookingClick(specialty)}
-                      className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white"
+                      className="w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-xs text-white cursor-pointer"
                       style={{ backgroundColor: specialty.areaColor }}
                     >
                       <Calendar className="w-3.5 h-3.5" />
-                      <span>Agendar {specialty.speciality}</span>
+                      <span>Agendar {specialty.specialty}</span>
                     </button>
                   </div>
                 </div>
@@ -916,14 +911,14 @@ export default function AltavitaPage() {
                       onChange={(e) => {
                         const selectedName = e.target.value;
                         setSelectedSpecialtyForBooking(selectedName);
-                        const sp = SPECIALTIES_DATA.find((s) => s.speciality === selectedName);
+                        const sp = SPECIALTIES_DATA.find((s) => s.specialty === selectedName);
                         setSelectedSpecialtyBookingUrl(sp?.bookingUrl || DEFAULT_BOOKING_URL);
                       }}
-                      className="w-full bg-[#F8F8F4] border border-[#3B5B28]/20 rounded-lg p-2.5 text-xs font-bold text-[#22311D] focus:ring-2 focus:ring-[#3B5B28]"
+                      className="w-full bg-[#F8F8F4] border border-[#3B5B28]/20 rounded-lg p-2.5 text-xs font-bold text-[#22311D] focus:ring-2 focus:ring-[#3B5B28] cursor-pointer"
                     >
                       {SPECIALTIES_DATA.map((sp) => (
-                        <option key={sp.id} value={sp.speciality}>
-                          {sp.speciality} {sp.name && sp.name !== 'Elige tu Especialista' ? `(${sp.name.replace(/;/g, ', ')})` : ''}
+                        <option key={sp.id} value={sp.specialty}>
+                          {sp.specialty} {sp.name && sp.name !== 'Elige tu Especialista' ? `(${sp.name.replace(/;/g, ', ')})` : ''}
                         </option>
                       ))}
                     </select>
@@ -948,7 +943,7 @@ export default function AltavitaPage() {
                   <button
                     id="btn-abrir-reserva-completa"
                     onClick={() => setIsBookingModalOpen(true)}
-                    className="w-full sm:w-auto bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all border border-[#b89528] flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold px-8 py-3.5 rounded-xl text-sm shadow-md transition-all border border-[#b89528] flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Calendar className="w-4 h-4 text-slate-950" />
                     <span>Abrir Agenda ({selectedSpecialtyForBooking})</span>
@@ -992,7 +987,7 @@ export default function AltavitaPage() {
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#22311D]/50 hover:text-[#22311D]"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#22311D]/50 hover:text-[#22311D] cursor-pointer"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -1005,7 +1000,7 @@ export default function AltavitaPage() {
                       key={cat}
                       id={`filter-category-${cat.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                       onClick={() => setSelectedCategory(cat)}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         selectedCategory === cat
                           ? 'bg-[#3B5B28] text-white shadow-xs'
                           : 'bg-[#F8F8F4] hover:bg-[#5B8246]/10 text-[#22311D]/80 border border-[#3B5B28]/15'
@@ -1037,7 +1032,7 @@ export default function AltavitaPage() {
                     setSearchQuery('');
                     setSelectedCategory('Todos');
                   }}
-                  className="bg-[#3B5B28] text-white font-bold text-xs px-4 py-2.5 rounded-xl"
+                  className="bg-[#3B5B28] text-white font-bold text-xs px-4 py-2.5 rounded-xl cursor-pointer"
                 >
                   Ver todos los productos
                 </button>
@@ -1143,7 +1138,7 @@ export default function AltavitaPage() {
                       <button
                         id={`btn-add-cart-${product.id}`}
                         onClick={() => addToCart(product)}
-                        className="w-full bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 border border-[#b89528]"
+                        className="w-full bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 border border-[#b89528] cursor-pointer"
                       >
                         <ShoppingBag className="w-4 h-4 text-slate-950" />
                         <span>Añadir al Carrito</span>
@@ -1217,7 +1212,7 @@ export default function AltavitaPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsCartOpen(false)}
-              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs"
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer"
             />
 
             <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
@@ -1233,7 +1228,7 @@ export default function AltavitaPage() {
                     <ShoppingBag className="w-5 h-5 text-[#3B5B28]" />
                     <h3 className="font-serif font-bold text-lg text-[#22311D]">Tu Carrito ({cartItemCount})</h3>
                   </div>
-                  <button onClick={() => setIsCartOpen(false)} className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700">
+                  <button onClick={() => setIsCartOpen(false)} className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 cursor-pointer">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -1269,14 +1264,14 @@ export default function AltavitaPage() {
                           <div className="flex items-center gap-2 mt-2">
                             <button
                               onClick={() => updateQuantity(item.product.id, -1)}
-                              className="w-5 h-5 rounded bg-[#F8F8F4] border flex items-center justify-center text-xs font-bold"
+                              className="w-5 h-5 rounded bg-[#F8F8F4] border flex items-center justify-center text-xs font-bold cursor-pointer"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
                             <span className="text-xs font-bold text-[#22311D] px-1">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.product.id, 1)}
-                              className="w-5 h-5 rounded bg-[#F8F8F4] border flex items-center justify-center text-xs font-bold"
+                              className="w-5 h-5 rounded bg-[#F8F8F4] border flex items-center justify-center text-xs font-bold cursor-pointer"
                             >
                               <Plus className="w-3 h-3" />
                             </button>
@@ -1284,7 +1279,7 @@ export default function AltavitaPage() {
                         </div>
 
                         <div className="text-right flex flex-col items-end justify-between self-stretch">
-                          <button onClick={() => removeFromCart(item.product.id)} className="text-red-500 hover:text-red-700 p-1">
+                          <button onClick={() => removeFromCart(item.product.id)} className="text-red-500 hover:text-red-700 p-1 cursor-pointer">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                           <span className="text-xs font-extrabold text-[#3B5B28]">
@@ -1302,14 +1297,14 @@ export default function AltavitaPage() {
                       <label className="text-[10px] font-bold uppercase text-[#22311D]/70 block">Método de Entrega:</label>
                       <label className="flex items-center justify-between p-2 rounded-lg bg-[#F8F8F4] border cursor-pointer">
                         <span className="flex items-center gap-2">
-                          <input type="radio" name="shipping" checked={shippingOption === 'pickup'} onChange={() => setShippingOption('pickup')} />
+                          <input type="radio" name="shipping" checked={shippingOption === 'pickup'} onChange={() => setShippingOption('pickup')} className="cursor-pointer" />
                           <span>Retiro en Los Hibiscus 740</span>
                         </span>
                         <span className="font-bold text-emerald-700">GRATIS</span>
                       </label>
                       <label className="flex items-center justify-between p-2 rounded-lg bg-[#F8F8F4] border cursor-pointer">
                         <span className="flex items-center gap-2">
-                          <input type="radio" name="shipping" checked={shippingOption === 'local'} onChange={() => setShippingOption('local')} />
+                          <input type="radio" name="shipping" checked={shippingOption === 'local'} onChange={() => setShippingOption('local')} className="cursor-pointer" />
                           <span>Despacho La Serena / Coquimbo</span>
                         </span>
                         <span className="font-bold text-[#22311D]">{formatCLP(2500)}</span>
@@ -1331,26 +1326,13 @@ export default function AltavitaPage() {
                       </div>
                     </div>
 
-                    <div className="space-y-2 pt-1">
-                      <button
-                        id="btn-mercadopago-checkout"
-                        onClick={() => {
-                          setIsCartOpen(false);
-                          setCheckoutStep('form');
-                          setIsCheckoutModalOpen(true);
-                        }}
-                        className="w-full bg-[#009EE3] hover:bg-[#0087c2] text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
-                      >
-                        <CreditCard className="w-4 h-4" />
-                        <span>Pagar con MercadoPago</span>
-                      </button>
-
+                    <div className="pt-1">
                       <a
                         id="btn-whatsapp-checkout"
                         href={generateWhatsAppOrderLink()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold py-3.5 px-4 rounded-xl text-xs sm:text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <Phone className="w-4 h-4" />
                         <span>Pedir por WhatsApp</span>
@@ -1368,7 +1350,7 @@ export default function AltavitaPage() {
       <AnimatePresence>
         {multiSpecialistModal.isOpen && (
           <div id="multi-specialist-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false })} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false })} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer" />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -1379,9 +1361,9 @@ export default function AltavitaPage() {
               <div className="flex items-center justify-between border-b pb-3">
                 <div>
                   <span className="text-[10px] font-bold text-[#5B8246] uppercase tracking-wider">Especialidad</span>
-                  <h3 className="font-serif font-bold text-xl text-[#22311D]">{multiSpecialistModal.speciality}</h3>
+                  <h3 className="font-serif font-bold text-xl text-[#22311D]">{multiSpecialistModal.specialty}</h3>
                 </div>
-                <button onClick={() => setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false })} className="text-stone-400 hover:text-stone-700 p-1">
+                <button onClick={() => setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false })} className="text-stone-400 hover:text-stone-700 p-1 cursor-pointer">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1397,11 +1379,11 @@ export default function AltavitaPage() {
                     onClick={() => {
                       setMultiSpecialistModal({ ...multiSpecialistModal, isOpen: false });
                       openBookingForSpecialty(
-                        `${multiSpecialistModal.speciality} (${spec.name})`,
+                        `${multiSpecialistModal.specialty} (${spec.name})`,
                         spec.url
                       );
                     }}
-                    className="w-full bg-[#F8F8F4] hover:bg-[#3B5B28] text-[#22311D] hover:text-white p-4 rounded-2xl border border-[#3B5B28]/20 transition-all flex items-center justify-between group shadow-xs active:scale-98"
+                    className="w-full bg-[#F8F8F4] hover:bg-[#3B5B28] text-[#22311D] hover:text-white p-4 rounded-2xl border border-[#3B5B28]/20 transition-all flex items-center justify-between group shadow-xs active:scale-98 cursor-pointer"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-[#3B5B28]/10 group-hover:bg-white/20 flex items-center justify-center font-black text-xs text-[#3B5B28] group-hover:text-white shrink-0">
@@ -1418,11 +1400,11 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CONSULTORIO.ME (Altura Incrementada) */}
+      {/* MODAL CONSULTORIO.ME */}
       <AnimatePresence>
         {isBookingModalOpen && (
           <div id="booking-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsBookingModalOpen(false)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsBookingModalOpen(false)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer" />
 
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -1435,7 +1417,7 @@ export default function AltavitaPage() {
                   <Calendar className="w-5 h-5 text-[#D4AF37]" />
                   <h3 className="font-serif font-bold text-base">Agendamiento · {selectedSpecialtyForBooking}</h3>
                 </div>
-                <button onClick={() => setIsBookingModalOpen(false)} className="text-white/80 hover:text-white">
+                <button onClick={() => setIsBookingModalOpen(false)} className="text-white/80 hover:text-white cursor-pointer">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1453,79 +1435,11 @@ export default function AltavitaPage() {
         )}
       </AnimatePresence>
 
-      {/* MODAL CHECKOUT */}
-      <AnimatePresence>
-        {isCheckoutModalOpen && (
-          <div id="checkout-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsCheckoutModalOpen(false)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl z-10 space-y-4">
-              <div className="flex items-center justify-between border-b pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#009EE3] text-white font-bold flex items-center justify-center text-xs">MP</div>
-                  <h3 className="font-serif font-bold text-base text-[#22311D]">MercadoPago Pago Seguro</h3>
-                </div>
-                <button onClick={() => setIsCheckoutModalOpen(false)}><X className="w-4 h-4 text-stone-400" /></button>
-              </div>
-
-              {checkoutStep === 'form' ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    setCheckoutStep('success');
-                    setCart([]);
-                  }}
-                  className="space-y-3 text-xs"
-                >
-                  <div className="bg-[#F8F8F4] p-3 rounded-xl flex justify-between font-bold">
-                    <span>Total a Pagar:</span>
-                    <span className="text-sm text-[#3B5B28]">{formatCLP(cartTotal)}</span>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold mb-1">Nombre Completo:</label>
-                    <input required type="text" value={customerData.name} onChange={(e) => setCustomerData({ ...customerData, name: e.target.value })} className="w-full bg-[#F8F8F4] border rounded-xl p-2" />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block font-bold mb-1">RUT:</label>
-                      <input required type="text" value={customerData.rut} onChange={(e) => setCustomerData({ ...customerData, rut: e.target.value })} className="w-full bg-[#F8F8F4] border rounded-xl p-2" />
-                    </div>
-                    <div>
-                      <label className="block font-bold mb-1">Teléfono:</label>
-                      <input required type="tel" value={customerData.phone} onChange={(e) => setCustomerData({ ...customerData, phone: e.target.value })} className="w-full bg-[#F8F8F4] border rounded-xl p-2" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block font-bold mb-1">Dirección de Despacho:</label>
-                    <input required type="text" value={customerData.address} onChange={(e) => setCustomerData({ ...customerData, address: e.target.value })} className="w-full bg-[#F8F8F4] border rounded-xl p-2" />
-                  </div>
-
-                  <button type="submit" className="w-full bg-[#009EE3] text-white font-extrabold py-3 rounded-xl shadow-md text-xs sm:text-sm mt-2">
-                    Pagar {formatCLP(cartTotal)} con Webpay
-                  </button>
-                </form>
-              ) : (
-                <div className="text-center py-4 space-y-3">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
-                  <h3 className="font-serif text-lg font-bold text-[#22311D]">¡Pago Procesado!</h3>
-                  <p className="text-xs text-[#22311D]/75">Tu comprobante ha sido registrado con éxito.</p>
-                  <button onClick={() => setIsCheckoutModalOpen(false)} className="bg-[#3B5B28] text-white font-bold px-5 py-2 rounded-xl text-xs">
-                    Cerrar
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
       {/* MODAL QUICK VIEW */}
       <AnimatePresence>
         {quickViewProduct && (
           <div id="quickview-modal-overlay" className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setQuickViewProduct(null)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setQuickViewProduct(null)} className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs cursor-pointer" />
             
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="relative bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl z-10 space-y-6">
               
@@ -1534,7 +1448,7 @@ export default function AltavitaPage() {
                   <span className="text-[10px] font-bold text-[#5B8246] uppercase tracking-wider">{quickViewProduct.category}</span>
                   <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#22311D]">{quickViewProduct.name}</h3>
                 </div>
-                <button onClick={() => setQuickViewProduct(null)} className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700">
+                <button onClick={() => setQuickViewProduct(null)} className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 cursor-pointer">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1573,13 +1487,13 @@ export default function AltavitaPage() {
                       <>
                         <button
                           onClick={() => setActiveModalImgIndex((prev) => (prev - 1 + quickViewProduct.images.length) % quickViewProduct.images.length)}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all z-10"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all z-10 cursor-pointer"
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setActiveModalImgIndex((prev) => (prev + 1) % quickViewProduct.images.length)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all z-10"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-[#22311D] p-1.5 rounded-full shadow-md transition-all z-10 cursor-pointer"
                         >
                           <ChevronRight className="w-4 h-4" />
                         </button>
@@ -1593,7 +1507,7 @@ export default function AltavitaPage() {
                         <button
                           key={idx}
                           onClick={() => setActiveModalImgIndex(idx)}
-                          className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all bg-[#F8F8F4] flex items-center justify-center shrink-0 ${
+                          className={`w-12 h-12 rounded-lg border-2 overflow-hidden transition-all bg-[#F8F8F4] flex items-center justify-center shrink-0 cursor-pointer ${
                             activeModalImgIndex === idx ? 'border-[#3B5B28] shadow-xs scale-105' : 'border-transparent opacity-60 hover:opacity-100'
                           }`}
                         >
@@ -1634,7 +1548,7 @@ export default function AltavitaPage() {
                         addToCart(quickViewProduct);
                         setQuickViewProduct(null);
                       }}
-                      className="bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold px-6 py-3 rounded-xl text-xs sm:text-sm shadow-md flex items-center gap-2 border border-[#b89528]"
+                      className="bg-[#D4AF37] hover:bg-[#c5a028] text-slate-950 font-extrabold px-6 py-3 rounded-xl text-xs sm:text-sm shadow-md flex items-center gap-2 border border-[#b89528] cursor-pointer"
                     >
                       <ShoppingBag className="w-4 h-4 text-slate-950" />
                       <span>Añadir al Carrito</span>
@@ -1678,7 +1592,7 @@ export default function AltavitaPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#D4AF37] hover:text-slate-950 text-white flex items-center justify-center transition-colors"
+                  className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#D4AF37] hover:text-slate-950 text-white flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <Instagram className="w-4 h-4" />
                 </a>
@@ -1688,7 +1602,7 @@ export default function AltavitaPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#D4AF37] hover:text-slate-950 text-white flex items-center justify-center transition-colors"
+                  className="w-9 h-9 rounded-xl bg-white/10 hover:bg-[#D4AF37] hover:text-slate-950 text-white flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <Facebook className="w-4 h-4" />
                 </a>
@@ -1698,7 +1612,7 @@ export default function AltavitaPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"
-                  className="w-9 h-9 rounded-xl bg-[#25D366] text-white flex items-center justify-center transition-transform hover:scale-105"
+                  className="w-9 h-9 rounded-xl bg-[#25D366] text-white flex items-center justify-center transition-transform hover:scale-105 cursor-pointer"
                 >
                   <Phone className="w-4 h-4" />
                 </a>
@@ -1710,8 +1624,8 @@ export default function AltavitaPage() {
               <ul className="space-y-1.5 text-xs text-[#F8F8F4]/80">
                 {SPECIALTIES_DATA.slice(0, 6).map((sp) => (
                   <li key={sp.id}>
-                    <button onClick={() => handleSpecialtyBookingClick(sp)} className="hover:text-[#D4AF37] transition-colors text-left">
-                      • {sp.speciality}
+                    <button onClick={() => handleSpecialtyBookingClick(sp)} className="hover:text-[#D4AF37] transition-colors text-left cursor-pointer">
+                      • {sp.specialty}
                     </button>
                   </li>
                 ))}
@@ -1733,7 +1647,7 @@ export default function AltavitaPage() {
                   <Phone className="w-4 h-4 text-[#D4AF37] shrink-0 mt-1" />
                   <div>
                     <strong className="block text-white font-semibold">Teléfono / WhatsApp:</strong>
-                    <a href="https://wa.me/56976766513" className="hover:text-[#D4AF37] underline">
+                    <a href="https://wa.me/56976766513" className="hover:text-[#D4AF37] underline cursor-pointer">
                       +56 9 7676 6513
                     </a>
                   </div>
@@ -1743,7 +1657,7 @@ export default function AltavitaPage() {
                   <Mail className="w-4 h-4 text-[#D4AF37] shrink-0 mt-1" />
                   <div>
                     <strong className="block text-white font-semibold">Correo Oficial:</strong>
-                    <a href="mailto:contacto@altavita.cl" className="hover:text-[#D4AF37] underline">
+                    <a href="mailto:contacto@altavita.cl" className="hover:text-[#D4AF37] underline cursor-pointer">
                       contacto@altavita.cl
                     </a>
                   </div>
